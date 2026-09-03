@@ -17,8 +17,6 @@ export const Route = createFileRoute("/activities")({
   component: Activities,
 });
 
-export default function noop() {}
-
 function Activities() {
   const { activities, interns } = useCrm();
   const [intern, setIntern] = useState("all");

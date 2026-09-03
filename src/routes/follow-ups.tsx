@@ -19,7 +19,7 @@ export const Route = createFileRoute("/follow-ups")({
       { property: "og:description", content: "Never miss a lead touchpoint: overdue, today and upcoming queues." },
     ],
   }),
-  component: FollowUps;
+  component: FollowUps,
 });
 
 function FollowUps() {
