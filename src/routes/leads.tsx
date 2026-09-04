@@ -45,6 +45,7 @@ function Leads() {
   const [industry, setIndustry] = useState(ALL);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const internName = (id: string) => interns.find((i) => i.id === id)?.name ?? "Unassigned";
 
