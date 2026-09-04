@@ -33,17 +33,77 @@ function Admin() {
     );
   }
 
-  const converted = leads.filter((l) => l.status === "Converted").length;
+  const visibleStats = allStats.filter((s) => internFilter === ALL || s.intern.id === internFilter);
+  const visibleLeads = leads.filter(
+    (l) => (internFilter === ALL || l.internId === internFilter) && (statusFilter === ALL || l.status === statusFilter),
+  );
+  const visibleFollowUps = followUps.filter((f) => internFilter === ALL || f.internId === internFilter);
+  const converted = visibleLeads.filter((l) => l.status === "Converted").length;
+  const activeFilters = [internFilter, statusFilter].filter((v) => v !== ALL).length;
+  const sorted = [...visibleStats].sort((a, b) =>
+    sortBy === "converted"
+      ? b.converted - a.converted || b.followUpRate - a.followUpRate
+      : sortBy === "followUpRate"
+        ? b.followUpRate - a.followUpRate
+        : sortBy === "assigned"
+          ? b.assigned - a.assigned
+          : b.hours - a.hours,
+  );
 
   return (
     <>
-      <PageHeader title="Admin Panel" subtitle={`${settings.companyName} · founder view`} />
+      <PageHeader
+        title="Admin Panel"
+        subtitle={`${settings.companyName} · founder view`}
+        action={
+          <div className="flex gap-2">
+            <Button variant={showFilters ? "default" : "outline"} onClick={() => setShowFilters((v) => !v)}>
+              <SlidersHorizontal className="size-4" /> Filters{activeFilters ? ` (${activeFilters})` : ""}
+            </Button>
+            {activeFilters > 0 && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setInternFilter(ALL);
+                  setStatusFilter(ALL);
+                }}
+              >
+                <X className="size-4" /> Clear
+              </Button>
+            )}
+          </div>
+        }
+      />
+
+      {showFilters && (
+        <div className="surface-card mb-5 grid gap-3 p-4 sm:grid-cols-3">
+          <FilterSelect
+            label="Intern"
+            value={internFilter}
+            onChange={setInternFilter}
+            options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.name }))}
+          />
+          <FilterSelect label="Lead status" value={statusFilter} onChange={setStatusFilter} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
+          <FilterSelect
+            label="Sort leaderboard by"
+            value={sortBy}
+            onChange={setSortBy}
+            includeAll={false}
+            options={[
+              { value: "converted", label: "Conversions" },
+              { value: "followUpRate", label: "Follow-up rate" },
+              { value: "assigned", label: "Assigned leads" },
+              { value: "hours", label: "Working hours" },
+            ]}
+          />
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Interns" value={allStats.length} icon={ShieldCheck} />
-        <StatCard label="Total leads" value={leads.length} />
-        <StatCard label="Follow-ups logged" value={followUps.length} />
-        <StatCard label="Conversions" value={converted} hint={`${leads.length ? Math.round((converted / leads.length) * 100) : 0}% win rate`} />
+        <StatCard label="Interns" value={visibleStats.length} icon={ShieldCheck} />
+        <StatCard label="Total leads" value={visibleLeads.length} />
+        <StatCard label="Follow-ups logged" value={visibleFollowUps.length} />
+        <StatCard label="Conversions" value={converted} hint={`${visibleLeads.length ? Math.round((converted / visibleLeads.length) * 100) : 0}% win rate`} />
       </div>
 
       <section className="surface-card mt-6 overflow-hidden">
@@ -51,8 +111,7 @@ function Admin() {
           <h2 className="text-sm font-semibold text-navy">Intern leaderboard</h2>
         </div>
         <ul className="divide-y">
-          {[...allStats]
-            .sort((a, b) => b.converted - a.converted || b.followUpRate - a.followUpRate)
+          {sorted
             .map((s, i) => (
               <li key={s.intern.id} className="flex flex-wrap items-center gap-4 px-5 py-4">
                 <span className="grid size-7 shrink-0 place-items-center rounded-full bg-muted text-xs font-bold text-navy">{i + 1}</span>
