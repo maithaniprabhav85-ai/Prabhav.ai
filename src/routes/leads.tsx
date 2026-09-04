@@ -64,6 +64,15 @@ function Leads() {
   }, [leads, q, intern, status, priority, industry, from, to]);
 
   const cell = settings.compactTable ? "px-3 py-2" : "px-4 py-3";
+  const activeFilters = [intern, status, priority, industry].filter((v) => v !== ALL).length + (from ? 1 : 0) + (to ? 1 : 0);
+  const clearFilters = () => {
+    setIntern(ALL);
+    setStatus(ALL);
+    setPriority(ALL);
+    setIndustry(ALL);
+    setFrom("");
+    setTo("");
+  };
 
   return (
     <>
