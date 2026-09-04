@@ -82,11 +82,23 @@ function Leads() {
       />
 
       <div className="surface-card mb-5 p-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Search company, contact, email, phone or city" value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input className="pl-9" placeholder="Search company, contact, email, phone or city" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+          <div className="flex gap-2">
+            <Button variant={showFilters ? "default" : "outline"} onClick={() => setShowFilters((v) => !v)}>
+              <SlidersHorizontal className="size-4" /> Filters{activeFilters ? ` (${activeFilters})` : ""}
+            </Button>
+            {activeFilters > 0 && (
+              <Button variant="ghost" onClick={clearFilters}>
+                <X className="size-4" /> Clear
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+        <div className={`mt-3 gap-3 sm:grid-cols-2 xl:grid-cols-6 ${showFilters ? "grid" : "hidden"}`}>
           <FilterSelect label="Intern" value={intern} onChange={setIntern} options={interns.map((i) => ({ value: i.id, label: i.name }))} />
           <FilterSelect label="Status" value={status} onChange={setStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
           <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
