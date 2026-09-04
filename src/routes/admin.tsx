@@ -1,10 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, SlidersHorizontal, X } from "lucide-react";
+import { useState } from "react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, StatCard } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/store";
+import { LEAD_STATUSES } from "@/lib/crm/types";
+
+const ALL = "all";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
