@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, Intern, Lead, Settings } from "./types";
+import type { Activity, CrmData, FollowUpLog, Intern, Lead, Settings } from "./types";
 
 const KEY = "intern-lead-crm-v1";
 
