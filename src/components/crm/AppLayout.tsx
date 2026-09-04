@@ -84,7 +84,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background lg:flex">
+    <div className="relative min-h-screen bg-background lg:flex">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="size-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/80 backdrop-blur-[2px]" />
+      </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
         <Brand />
         <NavList />
