@@ -91,6 +91,10 @@ function Admin() {
                 onClick={() => {
                   setInternFilter(ALL);
                   setStatusFilter(ALL);
+                  setMinHours("");
+                  setMaxHours("");
+                  setFromAt("");
+                  setToAt("");
                 }}
               >
                 <X className="size-4" /> Clear
