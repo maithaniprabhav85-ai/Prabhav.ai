@@ -27,6 +27,10 @@ export const Route = createFileRoute("/admin")({
 
 function Admin() {
   const { allStats, leads, followUps, settings } = useCrm();
+  const [showFilters, setShowFilters] = useState(false);
+  const [internFilter, setInternFilter] = useState(ALL);
+  const [statusFilter, setStatusFilter] = useState(ALL);
+  const [sortBy, setSortBy] = useState("converted");
 
   if (settings.role !== "Founder") {
     return (
