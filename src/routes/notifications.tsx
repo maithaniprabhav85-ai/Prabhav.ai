@@ -3,7 +3,7 @@ import { AlertTriangle, Bell, CalendarClock, CheckCheck } from "lucide-react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({

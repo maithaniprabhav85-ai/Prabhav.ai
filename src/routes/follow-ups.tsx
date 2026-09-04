@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 import type { Lead } from "@/lib/crm/types";
 
 export const Route = createFileRoute("/follow-ups")({

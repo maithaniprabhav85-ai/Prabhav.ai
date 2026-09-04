@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 import { INDUSTRIES, LEAD_PRIORITIES, LEAD_STATUSES } from "@/lib/crm/types";
 
 export const Route = createFileRoute("/leads")({
