@@ -122,12 +122,20 @@ function Leads() {
           <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
           <FilterSelect label="Industry" value={industry} onChange={setIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Created from
-            <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+            Created from (date & time)
+            <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Created to
-            <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+            Created to (date & time)
+            <Input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />
+          </label>
+          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Min intern hours
+            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+          </label>
+          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Max intern hours
+            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
           </label>
         </div>
       </div>
