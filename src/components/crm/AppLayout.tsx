@@ -17,7 +17,7 @@ import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/" as const, label: "Dashboard", icon: LayoutDashboard },
   { to: "/leads", label: "Leads", icon: Users },
   { to: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
   { to: "/activities", label: "Activities", icon: ActivityIcon },
