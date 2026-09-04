@@ -46,6 +46,8 @@ function Leads() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [minHours, setMinHours] = useState("");
+  const [maxHours, setMaxHours] = useState("");
 
   const internName = (id: string) => interns.find((i) => i.id === id)?.name ?? "Unassigned";
 
@@ -57,15 +59,19 @@ function Leads() {
       if (status !== ALL && l.status !== status) return false;
       if (priority !== ALL && l.priority !== priority) return false;
       if (industry !== ALL && l.industry !== industry) return false;
-      const created = l.createdAt.slice(0, 10);
-      if (from && created < from) return false;
-      if (to && created > to) return false;
+      const created = new Date(l.createdAt).getTime();
+      if (from && created < new Date(from).getTime()) return false;
+      if (to && created > new Date(to).getTime()) return false;
+      const hours = interns.find((i) => i.id === l.internId)?.workingHours ?? 0;
+      if (minHours && hours < Number(minHours)) return false;
+      if (maxHours && hours > Number(maxHours)) return false;
       return true;
     });
-  }, [leads, q, intern, status, priority, industry, from, to]);
+  }, [leads, interns, q, intern, status, priority, industry, from, to, minHours, maxHours]);
 
   const cell = settings.compactTable ? "px-3 py-2" : "px-4 py-3";
-  const activeFilters = [intern, status, priority, industry].filter((v) => v !== ALL).length + (from ? 1 : 0) + (to ? 1 : 0);
+  const activeFilters =
+    [intern, status, priority, industry].filter((v) => v !== ALL).length + [from, to, minHours, maxHours].filter(Boolean).length;
   const clearFilters = () => {
     setIntern(ALL);
     setStatus(ALL);
@@ -73,6 +79,8 @@ function Leads() {
     setIndustry(ALL);
     setFrom("");
     setTo("");
+    setMinHours("");
+    setMaxHours("");
   };
 
   return (
@@ -114,12 +122,20 @@ function Leads() {
           <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
           <FilterSelect label="Industry" value={industry} onChange={setIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Created from
-            <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+            Created from (date & time)
+            <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Created to
-            <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+            Created to (date & time)
+            <Input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />
+          </label>
+          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Min intern hours
+            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+          </label>
+          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Max intern hours
+            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
           </label>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, StatCard } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/store";
@@ -31,6 +32,10 @@ function Admin() {
   const [internFilter, setInternFilter] = useState(ALL);
   const [statusFilter, setStatusFilter] = useState(ALL);
   const [sortBy, setSortBy] = useState("converted");
+  const [minHours, setMinHours] = useState("");
+  const [maxHours, setMaxHours] = useState("");
+  const [fromAt, setFromAt] = useState("");
+  const [toAt, setToAt] = useState("");
 
   if (settings.role !== "Founder") {
     return (
@@ -42,13 +47,25 @@ function Admin() {
     );
   }
 
-  const visibleStats = allStats.filter((s) => internFilter === ALL || s.intern.id === internFilter);
+  const inHours = (h: number) => (!minHours || h >= Number(minHours)) && (!maxHours || h <= Number(maxHours));
+  const inRange = (iso: string) => {
+    const t = new Date(iso).getTime();
+    if (fromAt && t < new Date(fromAt).getTime()) return false;
+    if (toAt && t > new Date(toAt).getTime()) return false;
+    return true;
+  };
+  const visibleStats = allStats.filter((s) => (internFilter === ALL || s.intern.id === internFilter) && inHours(s.hours));
+  const allowedInterns = new Set(visibleStats.map((s) => s.intern.id));
   const visibleLeads = leads.filter(
-    (l) => (internFilter === ALL || l.internId === internFilter) && (statusFilter === ALL || l.status === statusFilter),
+    (l) =>
+      allowedInterns.has(l.internId) &&
+      (statusFilter === ALL || l.status === statusFilter) &&
+      inRange(l.createdAt),
   );
-  const visibleFollowUps = followUps.filter((f) => internFilter === ALL || f.internId === internFilter);
+  const visibleFollowUps = followUps.filter((f) => allowedInterns.has(f.internId) && inRange(f.completedAt));
   const converted = visibleLeads.filter((l) => l.status === "Converted").length;
-  const activeFilters = [internFilter, statusFilter].filter((v) => v !== ALL).length;
+  const activeFilters =
+    [internFilter, statusFilter].filter((v) => v !== ALL).length + [minHours, maxHours, fromAt, toAt].filter(Boolean).length;
   const sorted = [...visibleStats].sort((a, b) =>
     sortBy === "converted"
       ? b.converted - a.converted || b.followUpRate - a.followUpRate
@@ -75,6 +92,10 @@ function Admin() {
                 onClick={() => {
                   setInternFilter(ALL);
                   setStatusFilter(ALL);
+                  setMinHours("");
+                  setMaxHours("");
+                  setFromAt("");
+                  setToAt("");
                 }}
               >
                 <X className="size-4" /> Clear
@@ -105,6 +126,18 @@ function Admin() {
               { value: "hours", label: "Working hours" },
             ]}
           />
+          <Field label="Min working hours">
+            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+          </Field>
+          <Field label="Max working hours">
+            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
+          </Field>
+          <Field label="Activity from (date & time)">
+            <Input type="datetime-local" value={fromAt} onChange={(e) => setFromAt(e.target.value)} />
+          </Field>
+          <Field label="Activity to (date & time)">
+            <Input type="datetime-local" value={toAt} onChange={(e) => setToAt(e.target.value)} />
+          </Field>
         </div>
       )}
 
@@ -169,6 +202,15 @@ function FilterSelect({
           {options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
         </SelectContent>
       </Select>
+    </label>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {label}
+      {children}
     </label>
   );
 }
