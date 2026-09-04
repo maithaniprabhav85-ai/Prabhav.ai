@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, Intern } from "./types";
-import { CrmContext, type Ctx } from "./context";
+import type { Activity, CrmData, Intern, Lead } from "./types";
+import { CrmContext, type Ctx, type CrmNotification, type InternStats } from "./context";
 
 export { useCrm } from "./context";
 export type { InternStats, CrmNotification } from "./context";

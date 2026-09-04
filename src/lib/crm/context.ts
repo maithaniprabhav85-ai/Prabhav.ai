@@ -18,7 +18,7 @@ export interface CrmNotification {
   at: string;
 }
 
-interface Ctx {
+export interface Ctx {
   data: CrmData;
   hydrated: boolean;
   interns: Intern[];
