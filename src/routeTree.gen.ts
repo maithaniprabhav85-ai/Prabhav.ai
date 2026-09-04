@@ -14,6 +14,7 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as FollowUpsRouteImport } from './routes/follow-ups'
 import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as InternsIndexRouteImport } from './routes/interns/index'
 import { Route as InternsInternIdRouteImport } from './routes/interns/$internId'
 
@@ -42,6 +43,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternsIndexRoute = InternsIndexRouteImport.update({
   id: '/interns/',
   path: '/interns/',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
   '/interns/$internId': typeof InternsInternIdRoute
   '/interns/': typeof InternsIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
   '/interns/$internId': typeof InternsInternIdRoute
   '/interns': typeof InternsIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
+  '/settings': typeof SettingsRoute
   '/interns/$internId': typeof InternsInternIdRoute
   '/interns/': typeof InternsIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/follow-ups'
     | '/leads'
     | '/notifications'
+    | '/settings'
     | '/interns/$internId'
     | '/interns/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/follow-ups'
     | '/leads'
     | '/notifications'
+    | '/settings'
     | '/interns/$internId'
     | '/interns'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/follow-ups'
     | '/leads'
     | '/notifications'
+    | '/settings'
     | '/interns/$internId'
     | '/interns/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   FollowUpsRoute: typeof FollowUpsRoute
   LeadsRoute: typeof LeadsRoute
   NotificationsRoute: typeof NotificationsRoute
+  SettingsRoute: typeof SettingsRoute
   InternsInternIdRoute: typeof InternsInternIdRoute
   InternsIndexRoute: typeof InternsIndexRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/interns/': {
       id: '/interns/'
       path: '/interns'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   FollowUpsRoute: FollowUpsRoute,
   LeadsRoute: LeadsRoute,
   NotificationsRoute: NotificationsRoute,
+  SettingsRoute: SettingsRoute,
   InternsInternIdRoute: InternsInternIdRoute,
   InternsIndexRoute: InternsIndexRoute,
 }
