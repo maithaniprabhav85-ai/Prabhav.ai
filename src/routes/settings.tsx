@@ -20,7 +20,7 @@ export const Route = createFileRoute("/settings")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: SettingsPage;
+  component: SettingsPage,
 });
 
 function SettingsPage() {
