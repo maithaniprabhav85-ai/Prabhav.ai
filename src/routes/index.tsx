@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatCard, StatusPill } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 
 export const Route = createFileRoute("/")({
   head: () => ({

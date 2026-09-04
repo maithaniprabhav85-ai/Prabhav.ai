@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 
 export const Route = createFileRoute("/interns/")({
   head: () => ({

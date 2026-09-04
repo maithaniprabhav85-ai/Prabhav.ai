@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/context";
 import { INDUSTRIES, LEAD_PRIORITIES, LEAD_STATUSES, type Lead } from "@/lib/crm/types";
 
 type Draft = Omit<Lead, "id" | "createdAt">;

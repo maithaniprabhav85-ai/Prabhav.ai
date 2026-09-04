@@ -3,7 +3,6 @@ import { seedData } from "./seed";
 import type { Activity, CrmData, Intern, Lead } from "./types";
 import { CrmContext, type Ctx, type CrmNotification, type InternStats } from "./context";
 
-export { useCrm } from "./context";
 export type { InternStats, CrmNotification } from "./context";
 
 const KEY = "intern-lead-crm-v1";
