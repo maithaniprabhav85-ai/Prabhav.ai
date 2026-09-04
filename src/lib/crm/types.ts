@@ -22,6 +22,8 @@ export const INDUSTRIES = [
 
 export interface Intern {
   id: string;
+  /** Assignment ID shown across leads, e.g. "Intern 1" */
+  code: string;
   name: string;
   email: string;
   phone: string;

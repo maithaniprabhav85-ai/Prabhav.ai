@@ -13,7 +13,10 @@ function load(): CrmData {
     return {
       ...seedData,
       ...parsed,
-      interns: parsed.interns ?? seedData.interns,
+      interns: (parsed.interns ?? seedData.interns).map((i, idx) => ({
+        ...i,
+        code: i.code || `Intern ${idx + 1}`,
+      })),
       leads: parsed.leads ?? seedData.leads,
       activities: parsed.activities ?? seedData.activities,
       followUps: parsed.followUps ?? seedData.followUps,
@@ -56,7 +59,7 @@ interface Ctx {
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
-  addIntern: (i: Omit<Intern, "id">) => void;
+  addIntern: (i: Omit<Intern, "id" | "code">) => void;
   completeFollowUp: (leadId: string) => void;
   rescheduleFollowUp: (leadId: string, date: string) => void;
   updateSettings: (patch: Partial<Settings>) => void;
@@ -90,7 +93,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       activities: [{ ...a, id: uid(), createdAt: new Date().toISOString() }, ...d.activities].slice(0, 200),
     });
 
-    const internName = (id: string) => data.interns.find((i) => i.id === id)?.name ?? "Unassigned";
+    const internName = (id: string) => data.interns.find((i) => i.id === id)?.code ?? "Unassigned";
 
     const statsFor = (intern: Intern): InternStats => {
       const assignedLeads = data.leads.filter((l) => l.internId === intern.id);
@@ -181,11 +184,11 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         }),
       addIntern: (i) =>
         setData((d) => {
-          const intern: Intern = { ...i, id: uid() };
+          const intern: Intern = { ...i, id: uid(), code: `Intern ${d.interns.length + 1}` };
           return logActivity({ ...d, interns: [...d.interns, intern] }, {
             internId: intern.id,
             type: "intern_added",
-            message: `${intern.name} joined the team`,
+            message: `${intern.code} (${intern.name}) joined the team`,
           });
         }),
       completeFollowUp: (leadId) =>

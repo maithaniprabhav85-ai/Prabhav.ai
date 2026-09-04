@@ -42,7 +42,7 @@ function InternProfile() {
       <Button asChild variant="ghost" size="sm" className="mb-2 -ml-2">
         <Link to="/interns"><ArrowLeft className="size-4" /> All profiles</Link>
       </Button>
-      <PageHeader title={intern.name} subtitle={`${intern.email} · ${intern.phone} · started ${intern.startDate}`} />
+      <PageHeader title={intern.code} subtitle={`${intern.name} · ${intern.email} · ${intern.phone} · started ${intern.startDate}`} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Assigned leads" value={stats.assigned} />

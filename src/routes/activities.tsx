@@ -33,7 +33,7 @@ function Activities() {
             <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All interns</SelectItem>
-              {interns.map((i) => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
+              {interns.map((i) => <SelectItem key={i.id} value={i.id}>{i.code}</SelectItem>)}
             </SelectContent>
           </Select>
         }

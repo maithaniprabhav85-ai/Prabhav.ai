@@ -111,7 +111,7 @@ function Admin() {
             label="Intern"
             value={internFilter}
             onChange={setInternFilter}
-            options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.name }))}
+            options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.code }))}
           />
           <FilterSelect label="Lead status" value={statusFilter} onChange={setStatusFilter} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
           <FilterSelect
@@ -162,7 +162,7 @@ function Admin() {
                   params={{ internId: s.intern.id }}
                   className="min-w-0 flex-1 text-sm font-semibold text-navy hover:text-primary"
                 >
-                  {s.intern.name}
+                  {s.intern.code}
                 </Link>
                 <span className="text-xs text-muted-foreground">
                   {s.assigned} leads · {s.completedFollowUps} follow-ups · {s.converted} converted · {s.hours}h
