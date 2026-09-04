@@ -1,5 +1,6 @@
 import { Link, useRouterState, type LinkProps } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
+import appBg from "@/assets/app-bg.jpg";
 import {
   Activity as ActivityIcon,
   Bell,
