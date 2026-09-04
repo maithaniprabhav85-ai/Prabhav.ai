@@ -46,13 +46,25 @@ function Admin() {
     );
   }
 
-  const visibleStats = allStats.filter((s) => internFilter === ALL || s.intern.id === internFilter);
+  const inHours = (h: number) => (!minHours || h >= Number(minHours)) && (!maxHours || h <= Number(maxHours));
+  const inRange = (iso: string) => {
+    const t = new Date(iso).getTime();
+    if (fromAt && t < new Date(fromAt).getTime()) return false;
+    if (toAt && t > new Date(toAt).getTime()) return false;
+    return true;
+  };
+  const visibleStats = allStats.filter((s) => (internFilter === ALL || s.intern.id === internFilter) && inHours(s.hours));
+  const allowedInterns = new Set(visibleStats.map((s) => s.intern.id));
   const visibleLeads = leads.filter(
-    (l) => (internFilter === ALL || l.internId === internFilter) && (statusFilter === ALL || l.status === statusFilter),
+    (l) =>
+      allowedInterns.has(l.internId) &&
+      (statusFilter === ALL || l.status === statusFilter) &&
+      inRange(l.createdAt),
   );
-  const visibleFollowUps = followUps.filter((f) => internFilter === ALL || f.internId === internFilter);
+  const visibleFollowUps = followUps.filter((f) => allowedInterns.has(f.internId) && inRange(f.completedAt));
   const converted = visibleLeads.filter((l) => l.status === "Converted").length;
-  const activeFilters = [internFilter, statusFilter].filter((v) => v !== ALL).length;
+  const activeFilters =
+    [internFilter, statusFilter].filter((v) => v !== ALL).length + [minHours, maxHours, fromAt, toAt].filter(Boolean).length;
   const sorted = [...visibleStats].sort((a, b) =>
     sortBy === "converted"
       ? b.converted - a.converted || b.followUpRate - a.followUpRate
