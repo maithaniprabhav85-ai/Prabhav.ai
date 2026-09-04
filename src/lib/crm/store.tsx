@@ -9,8 +9,17 @@ function load(): CrmData {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return seedData;
-    const parsed = JSON.parse(raw) as CrmData;
-    return { ...seedData, ...parsed, settings: { ...seedData.settings, ...parsed.settings } };
+    const parsed = JSON.parse(raw) as Partial<CrmData>;
+    return {
+      ...seedData,
+      ...parsed,
+      interns: parsed.interns ?? seedData.interns,
+      leads: parsed.leads ?? seedData.leads,
+      activities: parsed.activities ?? seedData.activities,
+      followUps: parsed.followUps ?? seedData.followUps,
+      readNotificationIds: parsed.readNotificationIds ?? [],
+      settings: { ...seedData.settings, ...parsed.settings },
+    };
   } catch {
     return seedData;
   }
