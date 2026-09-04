@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
-type NavItem = { to: LinkProps["to"]; label: string; icon: LucideIcon };
+type NavItem = { to: NonNullable<LinkProps["to"]>; label: string; icon: LucideIcon };
 
 const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
