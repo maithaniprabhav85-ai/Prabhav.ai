@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, Intern, Lead, Settings } from "./types";
+import type { Activity, CrmData, FollowUpLog, Intern, Lead, Settings } from "./types";
 
 const KEY = "intern-lead-crm-v1";
 
@@ -9,8 +9,17 @@ function load(): CrmData {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return seedData;
-    const parsed = JSON.parse(raw) as CrmData;
-    return { ...seedData, ...parsed, settings: { ...seedData.settings, ...parsed.settings } };
+    const parsed = JSON.parse(raw) as Partial<CrmData>;
+    return {
+      ...seedData,
+      ...parsed,
+      interns: parsed.interns ?? seedData.interns,
+      leads: parsed.leads ?? seedData.leads,
+      activities: parsed.activities ?? seedData.activities,
+      followUps: parsed.followUps ?? seedData.followUps,
+      readNotificationIds: parsed.readNotificationIds ?? [],
+      settings: { ...seedData.settings, ...parsed.settings },
+    };
   } catch {
     return seedData;
   }
@@ -42,6 +51,7 @@ interface Ctx {
   interns: Intern[];
   leads: Lead[];
   activities: Activity[];
+  followUps: FollowUpLog[];
   settings: Settings;
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
@@ -133,6 +143,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       interns: data.interns,
       leads: data.leads,
       activities: data.activities,
+      followUps: data.followUps,
       settings: data.settings,
       allStats,
       notifications,
