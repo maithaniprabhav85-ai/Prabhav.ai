@@ -42,6 +42,7 @@ interface Ctx {
   interns: Intern[];
   leads: Lead[];
   activities: Activity[];
+  followUps: FollowUpLog[];
   settings: Settings;
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
