@@ -125,6 +125,18 @@ function Admin() {
               { value: "hours", label: "Working hours" },
             ]}
           />
+          <Field label="Min working hours">
+            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+          </Field>
+          <Field label="Max working hours">
+            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
+          </Field>
+          <Field label="Activity from (date & time)">
+            <Input type="datetime-local" value={fromAt} onChange={(e) => setFromAt(e.target.value)} />
+          </Field>
+          <Field label="Activity to (date & time)">
+            <Input type="datetime-local" value={toAt} onChange={(e) => setToAt(e.target.value)} />
+          </Field>
         </div>
       )}
 
