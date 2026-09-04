@@ -1,6 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, FollowUpLog, Intern, Lead, Settings } from "./types";
+import type { Activity, CrmData, Intern, Lead } from "./types";
+import { CrmContext, type Ctx, type CrmNotification, type InternStats } from "./context";
+
+export { useCrm } from "./context";
+export type { InternStats, CrmNotification } from "./context";
 
 const KEY = "intern-lead-crm-v1";
 
@@ -30,48 +34,6 @@ function load(): CrmData {
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const today = () => new Date().toISOString().slice(0, 10);
-
-export interface InternStats {
-  intern: Intern;
-  assigned: number;
-  completedFollowUps: number;
-  followUpRate: number;
-  converted: number;
-  hours: number;
-}
-
-export interface CrmNotification {
-  id: string;
-  kind: "overdue" | "upcoming" | "update";
-  title: string;
-  body: string;
-  at: string;
-}
-
-interface Ctx {
-  data: CrmData;
-  hydrated: boolean;
-  interns: Intern[];
-  leads: Lead[];
-  activities: Activity[];
-  followUps: FollowUpLog[];
-  settings: Settings;
-  addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
-  updateLead: (id: string, patch: Partial<Lead>) => void;
-  deleteLead: (id: string) => void;
-  addIntern: (i: Omit<Intern, "id" | "code">) => void;
-  completeFollowUp: (leadId: string) => void;
-  rescheduleFollowUp: (leadId: string, date: string) => void;
-  updateSettings: (patch: Partial<Settings>) => void;
-  resetDemoData: () => void;
-  internStats: (id: string) => InternStats | undefined;
-  allStats: InternStats[];
-  notifications: CrmNotification[];
-  unreadCount: number;
-  markAllRead: () => void;
-}
-
-const CrmContext = createContext<Ctx | null>(null);
 
 export function CrmProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<CrmData>(seedData);
@@ -230,10 +192,4 @@ export function CrmProvider({ children }: { children: ReactNode }) {
   }, [data, hydrated]);
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;
-}
-
-export function useCrm() {
-  const ctx = useContext(CrmContext);
-  if (!ctx) throw new Error("useCrm must be used inside CrmProvider");
-  return ctx;
 }
