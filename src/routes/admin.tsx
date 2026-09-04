@@ -145,3 +145,30 @@ function Admin() {
     </>
   );
 }
+
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+  includeAll = true,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  includeAll?: boolean;
+}) {
+  return (
+    <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {label}
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger><SelectValue /></SelectTrigger>
+        <SelectContent>
+          {includeAll && <SelectItem value={ALL}>All</SelectItem>}
+          {options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </label>
+  );
+}
