@@ -57,15 +57,19 @@ function Leads() {
       if (status !== ALL && l.status !== status) return false;
       if (priority !== ALL && l.priority !== priority) return false;
       if (industry !== ALL && l.industry !== industry) return false;
-      const created = l.createdAt.slice(0, 10);
-      if (from && created < from) return false;
-      if (to && created > to) return false;
+      const created = new Date(l.createdAt).getTime();
+      if (from && created < new Date(from).getTime()) return false;
+      if (to && created > new Date(to).getTime()) return false;
+      const hours = interns.find((i) => i.id === l.internId)?.workingHours ?? 0;
+      if (minHours && hours < Number(minHours)) return false;
+      if (maxHours && hours > Number(maxHours)) return false;
       return true;
     });
-  }, [leads, q, intern, status, priority, industry, from, to]);
+  }, [leads, interns, q, intern, status, priority, industry, from, to, minHours, maxHours]);
 
   const cell = settings.compactTable ? "px-3 py-2" : "px-4 py-3";
-  const activeFilters = [intern, status, priority, industry].filter((v) => v !== ALL).length + (from ? 1 : 0) + (to ? 1 : 0);
+  const activeFilters =
+    [intern, status, priority, industry].filter((v) => v !== ALL).length + [from, to, minHours, maxHours].filter(Boolean).length;
   const clearFilters = () => {
     setIntern(ALL);
     setStatus(ALL);
@@ -73,6 +77,8 @@ function Leads() {
     setIndustry(ALL);
     setFrom("");
     setTo("");
+    setMinHours("");
+    setMaxHours("");
   };
 
   return (
