@@ -31,6 +31,10 @@ function Admin() {
   const [internFilter, setInternFilter] = useState(ALL);
   const [statusFilter, setStatusFilter] = useState(ALL);
   const [sortBy, setSortBy] = useState("converted");
+  const [minHours, setMinHours] = useState("");
+  const [maxHours, setMaxHours] = useState("");
+  const [fromAt, setFromAt] = useState("");
+  const [toAt, setToAt] = useState("");
 
   if (settings.role !== "Founder") {
     return (
