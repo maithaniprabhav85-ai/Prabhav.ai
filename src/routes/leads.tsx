@@ -49,7 +49,7 @@ function Leads() {
   const [minHours, setMinHours] = useState("");
   const [maxHours, setMaxHours] = useState("");
 
-  const internName = (id: string) => interns.find((i) => i.id === id)?.name ?? "Unassigned";
+  const internName = (id: string) => interns.find((i) => i.id === id)?.code ?? "Unassigned";
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -117,7 +117,7 @@ function Leads() {
           </div>
         </div>
         <div className={`mt-3 gap-3 sm:grid-cols-2 xl:grid-cols-6 ${showFilters ? "grid" : "hidden"}`}>
-          <FilterSelect label="Intern" value={intern} onChange={setIntern} options={interns.map((i) => ({ value: i.id, label: i.name }))} />
+          <FilterSelect label="Intern" value={intern} onChange={setIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
           <FilterSelect label="Status" value={status} onChange={setStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
           <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
           <FilterSelect label="Industry" value={industry} onChange={setIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />

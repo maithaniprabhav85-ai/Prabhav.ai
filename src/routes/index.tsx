@@ -66,7 +66,7 @@ function Dashboard() {
                 className="block px-5 py-4 transition-colors hover:bg-muted/60"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-navy">{s.intern.name}</p>
+                  <p className="text-sm font-semibold text-navy">{s.intern.code}</p>
                   <p className="text-xs text-muted-foreground">
                     {s.assigned} leads · {s.converted} converted · {s.hours}h
                   </p>

@@ -63,7 +63,7 @@ function List({ leads, empty }: { leads: Lead[]; empty: string }) {
               <PriorityPill priority={l.priority} />
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              {l.contactPerson} · {interns.find((i) => i.id === l.internId)?.name ?? "Unassigned"} · due {l.nextFollowUp}
+              {l.contactPerson} · {interns.find((i) => i.id === l.internId)?.code ?? "Unassigned"} · due {l.nextFollowUp}
             </p>
             {l.notes && <p className="mt-1 text-xs text-muted-foreground">{l.notes}</p>}
           </div>

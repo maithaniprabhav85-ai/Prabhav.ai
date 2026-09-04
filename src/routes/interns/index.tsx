@@ -47,10 +47,11 @@ function Interns() {
           >
             <div className="flex items-center gap-3">
               <span className="grid size-10 place-items-center rounded-full bg-navy text-sm font-bold text-navy-foreground">
-                {s.intern.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                {s.intern.code.replace(/[^0-9]/g, "")}
               </span>
               <div className="min-w-0">
-                <p className="truncate font-semibold text-navy">{s.intern.name}</p>
+                <p className="truncate font-semibold text-navy">{s.intern.code}</p>
+                <p className="truncate text-xs font-medium text-navy/70">{s.intern.name}</p>
                 <p className="truncate text-xs text-muted-foreground">{s.intern.email}</p>
               </div>
             </div>
@@ -97,7 +98,7 @@ function AddIntern() {
   const submit = () => {
     const name = form.name.trim() || `Intern ${interns.length + 1}`;
     addIntern({ ...form, name });
-    toast.success(`${name} added`);
+    toast.success(`Intern ${interns.length + 1} (${name}) added`);
     setOpen(false);
     setForm({ name: "", email: "", phone: "", startDate: new Date().toISOString().slice(0, 10), workingHours: 0 });
   };
@@ -110,7 +111,7 @@ function AddIntern() {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add intern</DialogTitle>
-          <DialogDescription>Interns can be added without limit; leave the name blank to auto-number.</DialogDescription>
+          <DialogDescription>Add the intern's name — the assignment ID (Intern 1, Intern 2, …) is generated automatically.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
           <Row label="Name">

@@ -4,12 +4,28 @@ const day = 86400000;
 const iso = (offsetDays: number) => new Date(Date.now() + offsetDays * day).toISOString();
 const dateOnly = (offsetDays: number) => iso(offsetDays).slice(0, 10);
 
-const interns = [
-  { id: "in-1", name: "Aarav Sharma", email: "aarav@internlead.io", phone: "+91 98110 22331", startDate: dateOnly(-96), workingHours: 184 },
-  { id: "in-2", name: "Diya Kapoor", email: "diya@internlead.io", phone: "+91 98220 44515", startDate: dateOnly(-72), workingHours: 142 },
-  { id: "in-3", name: "Rohan Mehta", email: "rohan@internlead.io", phone: "+91 99880 71234", startDate: dateOnly(-45), workingHours: 96 },
-  { id: "in-4", name: "Sana Iyer", email: "sana@internlead.io", phone: "+91 90045 88712", startDate: dateOnly(-21), workingHours: 54 },
+const internNames = [
+  "Aarav Sharma",
+  "Diya Kapoor",
+  "Rohan Mehta",
+  "Sana Iyer",
+  "Kabir Nanda",
+  "Ishita Roy",
+  "Vivaan Grover",
+  "Tara Menon",
+  "Yash Chawla",
+  "Nikita Bhatt",
 ];
+
+const interns = internNames.map((name, i) => ({
+  id: `in-${i + 1}`,
+  code: `Intern ${i + 1}`,
+  name,
+  email: `${name.split(" ")[0]!.toLowerCase()}@internlead.io`,
+  phone: `+91 9${String(811000000 + i * 3210987).slice(0, 9)}`,
+  startDate: dateOnly(-96 + i * 9),
+  workingHours: 184 - i * 14,
+}));
 
 const raw: Array<[string, string, string, string, string, LeadStatus, LeadPriority, string, number, number]> = [
   ["Northwind Analytics", "Priya Nair", "SaaS", "Bengaluru", "in-1", "Converted", "Hot", "Signed annual plan after 3 calls.", -34, -2],
@@ -61,7 +77,7 @@ const activities = [...leads]
     leadId: l.id,
     internId: l.internId,
     type: "lead_created" as const,
-    message: `${interns.find((x) => x.id === l.internId)?.name ?? "Someone"} added lead ${l.company}`,
+    message: `${interns.find((x) => x.id === l.internId)?.code ?? "Someone"} added lead ${l.company}`,
     createdAt: l.createdAt,
   }));
 

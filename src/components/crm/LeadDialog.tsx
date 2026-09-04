@@ -108,11 +108,11 @@ export function LeadDialog({ lead, trigger }: { lead?: Lead; trigger: ReactNode 
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Assigned intern">
+          <Field label="Assigned intern ID">
             <Select value={draft.internId} onValueChange={(v) => set("internId", v)}>
               <SelectTrigger><SelectValue placeholder="Select intern" /></SelectTrigger>
               <SelectContent>
-                {interns.map((i) => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
+                {interns.map((i) => <SelectItem key={i.id} value={i.id}>{i.code}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
