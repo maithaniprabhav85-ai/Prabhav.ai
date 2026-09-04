@@ -143,6 +143,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       interns: data.interns,
       leads: data.leads,
       activities: data.activities,
+      followUps: data.followUps,
       settings: data.settings,
       allStats,
       notifications,
