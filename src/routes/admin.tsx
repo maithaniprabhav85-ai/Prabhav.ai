@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, StatCard } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/store";
@@ -201,6 +202,15 @@ function FilterSelect({
           {options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
         </SelectContent>
       </Select>
+    </label>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {label}
+      {children}
     </label>
   );
 }
