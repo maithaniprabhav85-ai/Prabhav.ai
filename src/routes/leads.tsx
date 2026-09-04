@@ -46,6 +46,8 @@ function Leads() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [minHours, setMinHours] = useState("");
+  const [maxHours, setMaxHours] = useState("");
 
   const internName = (id: string) => interns.find((i) => i.id === id)?.name ?? "Unassigned";
 
