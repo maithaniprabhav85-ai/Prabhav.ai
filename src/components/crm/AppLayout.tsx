@@ -16,22 +16,24 @@ import { Button } from "@/components/ui/button";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { to: "/" as const, label: "Dashboard", icon: LayoutDashboard },
+type NavItem = { to: LinkProps["to"]; label: string; icon: LucideIcon };
+
+const NAV: NavItem[] = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/leads", label: "Leads", icon: Users },
   { to: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
   { to: "/activities", label: "Activities", icon: ActivityIcon },
   { to: "/interns", label: "Intern Profiles", icon: UsersRound },
   { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/settings", label: "Settings", icon: SettingsIcon },
-] as const;
+];
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useRouterState({ select: (s) => s.location });
   const { settings, unreadCount } = useCrm();
-  const items = [...NAV];
+  const items: NavItem[] = [...NAV];
   if (settings.role === "Founder") {
-    items.splice(6, 0, { to: "/admin", label: "Admin Panel", icon: ShieldCheck } as (typeof NAV)[number]);
+    items.splice(6, 0, { to: "/admin", label: "Admin Panel", icon: ShieldCheck });
   }
 
   return (
