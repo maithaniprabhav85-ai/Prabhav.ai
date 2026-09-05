@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CrmProvider } from "@/lib/crm/store";
 import { AppLayout } from "@/components/crm/AppLayout";
+import { LoginScreen } from "@/components/crm/LoginScreen";
+import { useCrm } from "@/lib/crm/context";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
