@@ -134,27 +134,37 @@ function Leads() {
           </div>
         </div>
         <div className={`mt-3 gap-3 sm:grid-cols-2 xl:grid-cols-6 ${showFilters ? "grid" : "hidden"}`}>
-          <FilterSelect label="Intern" value={intern} onChange={setIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
-          <FilterSelect label="Status" value={status} onChange={setStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
-          <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
-          <FilterSelect label="Industry" value={industry} onChange={setIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
+          <FilterSelect label="Intern" value={dIntern} onChange={setDIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
+          <FilterSelect label="Status" value={dStatus} onChange={setDStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
+          <FilterSelect label="Priority" value={dPriority} onChange={setDPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
+          <FilterSelect label="Industry" value={dIndustry} onChange={setDIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created from (date & time)
-            <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <Input type="datetime-local" value={dFrom} onChange={(e) => setDFrom(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created to (date & time)
-            <Input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />
+            <Input type="datetime-local" value={dTo} onChange={(e) => setDTo(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Min intern hours
-            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+            <Input type="number" min={0} value={dMinHours} onChange={(e) => setDMinHours(e.target.value)} placeholder="0" />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Max intern hours
-            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
+            <Input type="number" min={0} value={dMaxHours} onChange={(e) => setDMaxHours(e.target.value)} placeholder="Any" />
           </label>
         </div>
+        {showFilters && (
+          <div className="mt-3 flex justify-end gap-2 border-t pt-3">
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <X className="size-4" /> Reset
+            </Button>
+            <Button size="sm" onClick={applyFilters}>
+              <Check className="size-4" /> Apply filters
+            </Button>
+          </div>
+        )}
       </div>
 
       {filtered.length === 0 ? (
