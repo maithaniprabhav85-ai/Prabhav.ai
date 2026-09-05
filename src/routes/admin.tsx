@@ -29,6 +29,7 @@ export const Route = createFileRoute("/admin")({
 function Admin() {
   const { allStats, leads, followUps, settings } = useCrm();
   const [showFilters, setShowFilters] = useState(false);
+  // Applied filters — only change when Apply is clicked.
   const [internFilter, setInternFilter] = useState(ALL);
   const [statusFilter, setStatusFilter] = useState(ALL);
   const [sortBy, setSortBy] = useState("converted");
@@ -36,6 +37,28 @@ function Admin() {
   const [maxHours, setMaxHours] = useState("");
   const [fromAt, setFromAt] = useState("");
   const [toAt, setToAt] = useState("");
+  // Draft filters (bound to the inputs until Apply).
+  const [dIntern, setDIntern] = useState(ALL);
+  const [dStatus, setDStatus] = useState(ALL);
+  const [dSortBy, setDSortBy] = useState("converted");
+  const [dMinHours, setDMinHours] = useState("");
+  const [dMaxHours, setDMaxHours] = useState("");
+  const [dFromAt, setDFromAt] = useState("");
+  const [dToAt, setDToAt] = useState("");
+
+  const applyFilters = () => {
+    setInternFilter(dIntern);
+    setStatusFilter(dStatus);
+    setSortBy(dSortBy);
+    setMinHours(dMinHours);
+    setMaxHours(dMaxHours);
+    setFromAt(dFromAt);
+    setToAt(dToAt);
+  };
+  const clearAll = () => {
+    setInternFilter(ALL); setStatusFilter(ALL); setMinHours(""); setMaxHours(""); setFromAt(""); setToAt("");
+    setDIntern(ALL); setDStatus(ALL); setDMinHours(""); setDMaxHours(""); setDFromAt(""); setDToAt("");
+  };
 
   if (settings.role !== "Founder") {
     return (
