@@ -124,7 +124,53 @@
   h3 {
     letter-spacing: -0.02em;
   }
+
+  button,
+  [role="button"],
+  a[data-slot="button"] {
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 140ms ease,
+      box-shadow 180ms ease,
+      background-color 160ms ease,
+      color 160ms ease,
+      opacity 160ms ease;
+    touch-action: manipulation;
+  }
+
+  button:not(:disabled):hover,
+  [role="button"]:not([aria-disabled="true"]):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -12px color-mix(in oklab, var(--color-primary) 70%, transparent);
+  }
+
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-primary) 70%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (pointer: coarse) {
+    button,
+    [role="button"] {
+      min-height: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button,
+    [role="button"] {
+      transition: none;
+      transform: none !important;
+    }
+  }
 }
+
 
 @utility surface-card {
   background-color: color-mix(in oklab, var(--color-card) 88%, transparent);
