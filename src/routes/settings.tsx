@@ -79,16 +79,19 @@ function SettingsPage() {
               onChange={(v) => updateSettings({ compactTable: v })}
             />
           </div>
-          <Button
-            variant="outline"
-            className="mt-5"
-            onClick={() => {
-              resetDemoData();
-              toast.success("Demo data restored");
-            }}
-          >
-            <RotateCcw className="size-4" /> Reset demo data
-          </Button>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <ChangePasswordDialog />
+            <Button
+              variant="outline"
+              onClick={() => {
+                resetDemoData();
+                toast.success("Demo data restored");
+              }}
+            >
+              <RotateCcw className="size-4" /> Reset demo data
+            </Button>
+          </div>
+
         </section>
       </div>
     </>
