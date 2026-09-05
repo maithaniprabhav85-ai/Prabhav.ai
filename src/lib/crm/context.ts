@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Activity, CrmData, FollowUpLog, Intern, Lead, Settings } from "./types";
+import type { Activity, CrmData, FollowUpLog, Intern, Lead, Session, Settings } from "./types";
 
 export interface InternStats {
   intern: Intern;
@@ -26,10 +26,17 @@ export interface Ctx {
   activities: Activity[];
   followUps: FollowUpLog[];
   settings: Settings;
+  session: Session | null;
+  isFounder: boolean;
+  currentIntern: Intern | null;
+  signIn: (userId: string, password: string) => boolean;
+  signOut: () => void;
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
   addIntern: (i: Omit<Intern, "id" | "code">) => void;
+  updateIntern: (id: string, patch: Partial<Omit<Intern, "id" | "code">>) => void;
+  deleteIntern: (id: string) => void;
   completeFollowUp: (leadId: string) => void;
   rescheduleFollowUp: (leadId: string, date: string) => void;
   updateSettings: (patch: Partial<Settings>) => void;
@@ -48,4 +55,3 @@ export function useCrm() {
   if (!ctx) throw new Error("useCrm must be used inside CrmProvider");
   return ctx;
 }
-
