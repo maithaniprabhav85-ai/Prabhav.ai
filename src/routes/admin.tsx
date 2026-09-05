@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, SlidersHorizontal, X } from "lucide-react";
+import { Check, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, StatCard } from "@/components/crm/bits";
@@ -110,17 +110,7 @@ function Admin() {
               <SlidersHorizontal className="size-4" /> Filters{activeFilters ? ` (${activeFilters})` : ""}
             </Button>
             {activeFilters > 0 && (
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setInternFilter(ALL);
-                  setStatusFilter(ALL);
-                  setMinHours("");
-                  setMaxHours("");
-                  setFromAt("");
-                  setToAt("");
-                }}
-              >
+              <Button variant="ghost" onClick={clearAll}>
                 <X className="size-4" /> Clear
               </Button>
             )}
@@ -129,38 +119,48 @@ function Admin() {
       />
 
       {showFilters && (
-        <div className="surface-card mb-5 grid gap-3 p-4 sm:grid-cols-3">
-          <FilterSelect
-            label="Intern"
-            value={internFilter}
-            onChange={setInternFilter}
-            options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.code }))}
-          />
-          <FilterSelect label="Lead status" value={statusFilter} onChange={setStatusFilter} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
-          <FilterSelect
-            label="Sort leaderboard by"
-            value={sortBy}
-            onChange={setSortBy}
-            includeAll={false}
-            options={[
-              { value: "converted", label: "Conversions" },
-              { value: "followUpRate", label: "Follow-up rate" },
-              { value: "assigned", label: "Assigned leads" },
-              { value: "hours", label: "Working hours" },
-            ]}
-          />
-          <Field label="Min working hours">
-            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
-          </Field>
-          <Field label="Max working hours">
-            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
-          </Field>
-          <Field label="Activity from (date & time)">
-            <Input type="datetime-local" value={fromAt} onChange={(e) => setFromAt(e.target.value)} />
-          </Field>
-          <Field label="Activity to (date & time)">
-            <Input type="datetime-local" value={toAt} onChange={(e) => setToAt(e.target.value)} />
-          </Field>
+        <div className="surface-card mb-5 p-4">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <FilterSelect
+              label="Intern"
+              value={dIntern}
+              onChange={setDIntern}
+              options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.code }))}
+            />
+            <FilterSelect label="Lead status" value={dStatus} onChange={setDStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
+            <FilterSelect
+              label="Sort leaderboard by"
+              value={dSortBy}
+              onChange={setDSortBy}
+              includeAll={false}
+              options={[
+                { value: "converted", label: "Conversions" },
+                { value: "followUpRate", label: "Follow-up rate" },
+                { value: "assigned", label: "Assigned leads" },
+                { value: "hours", label: "Working hours" },
+              ]}
+            />
+            <Field label="Min working hours">
+              <Input type="number" min={0} value={dMinHours} onChange={(e) => setDMinHours(e.target.value)} placeholder="0" />
+            </Field>
+            <Field label="Max working hours">
+              <Input type="number" min={0} value={dMaxHours} onChange={(e) => setDMaxHours(e.target.value)} placeholder="Any" />
+            </Field>
+            <Field label="Activity from (date & time)">
+              <Input type="datetime-local" value={dFromAt} onChange={(e) => setDFromAt(e.target.value)} />
+            </Field>
+            <Field label="Activity to (date & time)">
+              <Input type="datetime-local" value={dToAt} onChange={(e) => setDToAt(e.target.value)} />
+            </Field>
+          </div>
+          <div className="mt-3 flex justify-end gap-2 border-t pt-3">
+            <Button variant="ghost" size="sm" onClick={clearAll}>
+              <X className="size-4" /> Reset
+            </Button>
+            <Button size="sm" onClick={applyFilters}>
+              <Check className="size-4" /> Apply filters
+            </Button>
+          </div>
         </div>
       )}
 
