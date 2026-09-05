@@ -153,6 +153,33 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         return false;
       },
       signOut: () => setData((d) => ({ ...d, session: null })),
+      changePassword: (current: string, next: string) => {
+        const cur = current.trim();
+        const nx = next.trim();
+        if (nx.length < 4) return { ok: false, error: "New password must be at least 4 characters." };
+        if (isFounder) {
+          if (cur !== data.settings.adminPassword) return { ok: false, error: "Current password is incorrect." };
+          setData((d) => ({ ...d, settings: { ...d.settings, adminPassword: nx } }));
+          return { ok: true };
+        }
+        if (!currentIntern) return { ok: false, error: "You need to sign in first." };
+        if (cur !== currentIntern.password) return { ok: false, error: "Current password is incorrect." };
+        setData((d) => ({
+          ...d,
+          interns: d.interns.map((i) => (i.id === currentIntern.id ? { ...i, password: nx } : i)),
+        }));
+        return { ok: true };
+      },
+      setInternPassword: (internId: string, next: string) => {
+        const nx = next.trim();
+        if (nx.length < 4) return { ok: false, error: "New password must be at least 4 characters." };
+        setData((d) => ({
+          ...d,
+          interns: d.interns.map((i) => (i.id === internId ? { ...i, password: nx } : i)),
+        }));
+        return { ok: true };
+      },
+
       allStats,
       notifications,
       unreadCount: notifications.filter((n) => !data.readNotificationIds.includes(n.id)).length,
