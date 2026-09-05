@@ -19,16 +19,22 @@ export const INDUSTRIES = [
   "Retail",
   "Logistics",
 ];
+export const DEPARTMENTS = ["Sales", "Marketing", "Operations", "Research", "Support"];
+export const DESIGNATIONS = ["Sales Intern", "Marketing Intern", "Research Intern", "Ops Intern", "Team Lead"];
 
 export interface Intern {
   id: string;
   /** Assignment ID shown across leads, e.g. "Intern 1" */
   code: string;
   name: string;
+  department: string;
+  designation: string;
   email: string;
   phone: string;
   startDate: string;
   workingHours: number;
+  /** Login password for this intern (demo-only, stored locally) */
+  password: string;
 }
 
 export interface Lead {
@@ -51,7 +57,15 @@ export interface Activity {
   id: string;
   leadId?: string;
   internId?: string;
-  type: "lead_created" | "lead_updated" | "lead_deleted" | "followup_completed" | "followup_rescheduled" | "intern_added";
+  type:
+    | "lead_created"
+    | "lead_updated"
+    | "lead_deleted"
+    | "followup_completed"
+    | "followup_rescheduled"
+    | "intern_added"
+    | "intern_updated"
+    | "intern_deleted";
   message: string;
   createdAt: string;
 }
@@ -70,7 +84,11 @@ export interface Settings {
   compactTable: boolean;
   notifyOverdue: boolean;
   notifyUpcoming: boolean;
+  adminId: string;
+  adminPassword: string;
 }
+
+export type Session = { role: "Founder"; internId: null } | { role: "Intern"; internId: string };
 
 export interface CrmData {
   interns: Intern[];
@@ -79,4 +97,5 @@ export interface CrmData {
   followUps: FollowUpLog[];
   settings: Settings;
   readNotificationIds: string[];
+  session: Session | null;
 }
