@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function Admin() {
-  const { allStats, leads, followUps, isFounder } = useCrm();
+  const { allStats, leads, followUps, isFounder, settings } = useCrm();
   const [showFilters, setShowFilters] = useState(false);
   // Applied filters — only change when Apply is clicked.
   const [internFilter, setInternFilter] = useState(ALL);
