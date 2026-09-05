@@ -153,7 +153,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         return false;
       },
       signOut: () => setData((d) => ({ ...d, session: null })),
-      changePassword: (current, next) => {
+      changePassword: (current: string, next: string) => {
         const cur = current.trim();
         const nx = next.trim();
         if (nx.length < 4) return { ok: false, error: "New password must be at least 4 characters." };
@@ -170,7 +170,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         }));
         return { ok: true };
       },
-      setInternPassword: (internId, next) => {
+      setInternPassword: (internId: string, next: string) => {
         const nx = next.trim();
         if (nx.length < 4) return { ok: false, error: "New password must be at least 4 characters." };
         setData((d) => ({
