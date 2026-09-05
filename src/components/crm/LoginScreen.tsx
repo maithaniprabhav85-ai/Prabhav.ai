@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import appBg from "@/assets/app-bg.jpg";
 import appBg4 from "@/assets/app-bg-4.jpg";
 import appBg5 from "@/assets/app-bg-5.jpg";
+import crmBgMain from "@/assets/crm-bg-main.jpg.asset.json";
+import crmBgAccent from "@/assets/crm-bg-accent.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,10 +42,19 @@ export function LoginScreen() {
   return (
     <div className="relative grid min-h-screen place-items-center px-4 py-10">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <img src={appBg} alt="" width={1920} height={1280} className="size-full object-cover" />
-        <img src={appBg4} alt="" width={1920} height={1080} loading="lazy" className="absolute inset-0 size-full object-cover opacity-60 mix-blend-screen" />
-        <img src={appBg5} alt="" width={1920} height={1080} loading="lazy" className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-25 mix-blend-soft-light" />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/80 backdrop-blur-[2px]" />
+        <img src={crmBgMain.url} alt="" width={1920} height={1080} className="size-full object-cover" />
+        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="absolute inset-0 size-full object-cover opacity-30" />
+        <img src={appBg4} alt="" width={1920} height={1080} loading="lazy" className="absolute inset-0 size-full object-cover opacity-40 mix-blend-screen" />
+        <img
+          src={crmBgAccent.url}
+          alt=""
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute -right-1/4 -top-1/4 h-[120%] w-[80%] object-cover opacity-20 mix-blend-screen"
+        />
+        <img src={appBg5} alt="" width={1920} height={1080} loading="lazy" className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-20 mix-blend-soft-light" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/85 to-accent/70 backdrop-blur-[2px]" />
       </div>
 
       <div className="surface-card w-full max-w-md p-7">

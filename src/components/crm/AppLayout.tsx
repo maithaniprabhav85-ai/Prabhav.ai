@@ -5,6 +5,8 @@ import appBg2 from "@/assets/app-bg-2.jpg";
 import appBg3 from "@/assets/app-bg-3.jpg";
 import appBg4 from "@/assets/app-bg-4.jpg";
 import appBg5 from "@/assets/app-bg-5.jpg";
+import crmBgMain from "@/assets/crm-bg-main.jpg.asset.json";
+import crmBgAccent from "@/assets/crm-bg-accent.jpg.asset.json";
 import {
   Activity as ActivityIcon,
   Bell,
@@ -119,14 +121,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen bg-background lg:flex">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="absolute inset-0 size-full object-cover" />
+        <img
+          src={crmBgMain.url}
+          alt=""
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute inset-0 size-full object-cover"
+        />
+        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="absolute inset-0 size-full object-cover opacity-30" />
         <img
           src={appBg2}
           alt=""
           width={1920}
           height={1280}
           loading="lazy"
-          className="absolute -right-1/4 top-0 h-full w-3/4 object-cover opacity-40 mix-blend-screen"
+          className="absolute -right-1/4 top-0 h-full w-3/4 object-cover opacity-30 mix-blend-screen"
         />
         <img
           src={appBg3}
@@ -134,7 +144,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
           width={1920}
           height={1280}
           loading="lazy"
-          className="absolute inset-0 size-full object-cover opacity-70 mix-blend-soft-light"
+          className="absolute inset-0 size-full object-cover opacity-50 mix-blend-soft-light"
+        />
+        <img
+          src={crmBgAccent.url}
+          alt=""
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute -right-1/4 -top-1/4 h-[120%] w-[80%] object-cover opacity-25 mix-blend-screen"
         />
         <img
           src={appBg4}
@@ -142,7 +160,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           width={1920}
           height={1080}
           loading="lazy"
-          className="absolute inset-0 size-full object-cover opacity-45 mix-blend-screen"
+          className="absolute inset-0 size-full object-cover opacity-35 mix-blend-screen"
         />
         <img
           src={appBg5}
@@ -150,9 +168,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           width={1920}
           height={1080}
           loading="lazy"
-          className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-25 mix-blend-soft-light"
+          className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-20 mix-blend-soft-light"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-accent/70 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/80 to-accent/60 backdrop-blur-[2px]" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_80%_0%,color-mix(in_oklab,var(--color-primary)_12%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-chart-2)_10%,transparent),transparent)]" />
       </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
