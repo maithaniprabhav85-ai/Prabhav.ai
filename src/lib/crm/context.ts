@@ -31,6 +31,9 @@ export interface Ctx {
   currentIntern: Intern | null;
   signIn: (userId: string, password: string) => boolean;
   signOut: () => void;
+  changePassword: (current: string, next: string) => { ok: boolean; error?: string };
+  setInternPassword: (internId: string, next: string) => { ok: boolean; error?: string };
+
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
