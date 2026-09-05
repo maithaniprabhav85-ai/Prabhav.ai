@@ -17,10 +17,16 @@ const internNames = [
   "Nikita Bhatt",
 ];
 
+const departments = ["Sales", "Marketing", "Operations", "Research", "Support"];
+const designations = ["Sales Intern", "Marketing Intern", "Research Intern", "Ops Intern", "Team Lead"];
+
 const interns = internNames.map((name, i) => ({
   id: `in-${i + 1}`,
   code: `Intern ${i + 1}`,
   name,
+  department: departments[i % departments.length]!,
+  designation: designations[i % designations.length]!,
+  password: `intern${i + 1}`,
   email: `${name.split(" ")[0]!.toLowerCase()}@internlead.io`,
   phone: `+91 9${String(811000000 + i * 3210987).slice(0, 9)}`,
   startDate: dateOnly(-96 + i * 9),
@@ -87,6 +93,7 @@ export const seedData: CrmData = {
   activities,
   followUps,
   readNotificationIds: [],
+  session: null,
   settings: {
     role: "Founder",
     companyName: "InternLead CRM",
@@ -94,5 +101,7 @@ export const seedData: CrmData = {
     compactTable: false,
     notifyOverdue: true,
     notifyUpcoming: true,
+    adminId: "admin",
+    adminPassword: "admin123",
   },
 };
