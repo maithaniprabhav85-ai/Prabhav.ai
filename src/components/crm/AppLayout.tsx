@@ -9,7 +9,9 @@ import {
   Activity as ActivityIcon,
   Bell,
   CalendarClock,
+  KeyRound,
   LayoutDashboard,
+
   LogOut,
   Menu,
   Settings as SettingsIcon,
