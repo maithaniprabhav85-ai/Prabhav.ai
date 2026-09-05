@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/format";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/crm/AppLayout";
@@ -90,7 +91,7 @@ function InternProfile() {
               {myActivity.map((a) => (
                 <li key={a.id} className="px-5 py-3">
                   <p className="text-sm">{a.message}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{new Date(a.createdAt).toLocaleString()}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</p>
                 </li>
               ))}
             </ul>

@@ -1,6 +1,8 @@
 import { Link, useRouterState, type LinkProps } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import appBg from "@/assets/app-bg.jpg";
+import appBg2 from "@/assets/app-bg-2.jpg";
+import appBg3 from "@/assets/app-bg-3.jpg";
 import {
   Activity as ActivityIcon,
   Bell,
@@ -86,9 +88,26 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative min-h-screen bg-background lg:flex">
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/80 backdrop-blur-[2px]" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <img src={appBg} alt="" width={1920} height={1280} loading="lazy" className="absolute inset-0 size-full object-cover" />
+        <img
+          src={appBg2}
+          alt=""
+          width={1920}
+          height={1280}
+          loading="lazy"
+          className="absolute -right-1/4 top-0 h-full w-3/4 object-cover opacity-40 mix-blend-screen"
+        />
+        <img
+          src={appBg3}
+          alt=""
+          width={1920}
+          height={1280}
+          loading="lazy"
+          className="absolute inset-0 size-full object-cover opacity-70 mix-blend-soft-light"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-accent/70 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_80%_0%,color-mix(in_oklab,var(--color-primary)_12%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-chart-2)_10%,transparent),transparent)]" />
       </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
         <Brand />

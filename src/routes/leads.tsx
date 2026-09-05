@@ -1,5 +1,6 @@
+import { formatDateTime } from "@/lib/format";
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
+import { Check, Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
@@ -39,15 +40,36 @@ const ALL = "all";
 function Leads() {
   const { leads, interns, deleteLead, settings } = useCrm();
   const [q, setQ] = useState("");
+  // Applied filters (drive the table) — only change when Apply is clicked.
   const [intern, setIntern] = useState(ALL);
   const [status, setStatus] = useState(ALL);
   const [priority, setPriority] = useState(ALL);
   const [industry, setIndustry] = useState(ALL);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
   const [minHours, setMinHours] = useState("");
   const [maxHours, setMaxHours] = useState("");
+  // Draft filters (bound to the inputs until Apply).
+  const [dIntern, setDIntern] = useState(ALL);
+  const [dStatus, setDStatus] = useState(ALL);
+  const [dPriority, setDPriority] = useState(ALL);
+  const [dIndustry, setDIndustry] = useState(ALL);
+  const [dFrom, setDFrom] = useState("");
+  const [dTo, setDTo] = useState("");
+  const [dMinHours, setDMinHours] = useState("");
+  const [dMaxHours, setDMaxHours] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const applyFilters = () => {
+    setIntern(dIntern);
+    setStatus(dStatus);
+    setPriority(dPriority);
+    setIndustry(dIndustry);
+    setFrom(dFrom);
+    setTo(dTo);
+    setMinHours(dMinHours);
+    setMaxHours(dMaxHours);
+  };
 
   const internName = (id: string) => interns.find((i) => i.id === id)?.code ?? "Unassigned";
 
@@ -73,14 +95,10 @@ function Leads() {
   const activeFilters =
     [intern, status, priority, industry].filter((v) => v !== ALL).length + [from, to, minHours, maxHours].filter(Boolean).length;
   const clearFilters = () => {
-    setIntern(ALL);
-    setStatus(ALL);
-    setPriority(ALL);
-    setIndustry(ALL);
-    setFrom("");
-    setTo("");
-    setMinHours("");
-    setMaxHours("");
+    setIntern(ALL); setStatus(ALL); setPriority(ALL); setIndustry(ALL);
+    setFrom(""); setTo(""); setMinHours(""); setMaxHours("");
+    setDIntern(ALL); setDStatus(ALL); setDPriority(ALL); setDIndustry(ALL);
+    setDFrom(""); setDTo(""); setDMinHours(""); setDMaxHours("");
   };
 
   return (
@@ -117,27 +135,37 @@ function Leads() {
           </div>
         </div>
         <div className={`mt-3 gap-3 sm:grid-cols-2 xl:grid-cols-6 ${showFilters ? "grid" : "hidden"}`}>
-          <FilterSelect label="Intern" value={intern} onChange={setIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
-          <FilterSelect label="Status" value={status} onChange={setStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
-          <FilterSelect label="Priority" value={priority} onChange={setPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
-          <FilterSelect label="Industry" value={industry} onChange={setIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
+          <FilterSelect label="Intern" value={dIntern} onChange={setDIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
+          <FilterSelect label="Status" value={dStatus} onChange={setDStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
+          <FilterSelect label="Priority" value={dPriority} onChange={setDPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
+          <FilterSelect label="Industry" value={dIndustry} onChange={setDIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created from (date & time)
-            <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <Input type="datetime-local" value={dFrom} onChange={(e) => setDFrom(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created to (date & time)
-            <Input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />
+            <Input type="datetime-local" value={dTo} onChange={(e) => setDTo(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Min intern hours
-            <Input type="number" min={0} value={minHours} onChange={(e) => setMinHours(e.target.value)} placeholder="0" />
+            <Input type="number" min={0} value={dMinHours} onChange={(e) => setDMinHours(e.target.value)} placeholder="0" />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Max intern hours
-            <Input type="number" min={0} value={maxHours} onChange={(e) => setMaxHours(e.target.value)} placeholder="Any" />
+            <Input type="number" min={0} value={dMaxHours} onChange={(e) => setDMaxHours(e.target.value)} placeholder="Any" />
           </label>
         </div>
+        {showFilters && (
+          <div className="mt-3 flex justify-end gap-2 border-t pt-3">
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <X className="size-4" /> Reset
+            </Button>
+            <Button size="sm" onClick={applyFilters}>
+              <Check className="size-4" /> Apply filters
+            </Button>
+          </div>
+        )}
       </div>
 
       {filtered.length === 0 ? (
@@ -169,7 +197,7 @@ function Leads() {
                   <td className={cell}><PriorityPill priority={l.priority} /></td>
                   <td className={cell}>{internName(l.internId)}</td>
                   <td className={cell}>{l.nextFollowUp || "—"}</td>
-                  <td className={`${cell} text-xs text-muted-foreground`}>{new Date(l.createdAt).toLocaleString()}</td>
+                  <td className={`${cell} text-xs text-muted-foreground`}>{formatDateTime(l.createdAt)}</td>
                   <td className={cell}>
                     <div className="flex justify-end gap-1">
                       <LeadDialog
