@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type Context } from "react";
 import type { Activity, CrmData, FollowUpLog, Intern, Lead, Session, Settings } from "./types";
 
 export interface InternStats {
@@ -51,7 +51,21 @@ export interface Ctx {
   markAllRead: () => void;
 }
 
-export const CrmContext = createContext<Ctx | null>(null);
+type CrmGlobal = typeof globalThis & {
+  __internLeadCrmContext?: Context<Ctx | null>;
+};
+
+// Keep one context identity across Vite hot updates. Without this, the provider
+// can temporarily retain the old module's context while consumers use the new
+// one, making a correctly nested consumer appear to be outside its provider.
+const crmGlobal = globalThis as CrmGlobal;
+const existingContext = crmGlobal.__internLeadCrmContext;
+
+export const CrmContext = existingContext ?? createContext<Ctx | null>(null);
+
+if (!existingContext) {
+  crmGlobal.__internLeadCrmContext = CrmContext;
+}
 
 export function useCrm() {
   const ctx = useContext(CrmContext);
