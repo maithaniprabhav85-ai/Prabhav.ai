@@ -94,14 +94,10 @@ function Leads() {
   const activeFilters =
     [intern, status, priority, industry].filter((v) => v !== ALL).length + [from, to, minHours, maxHours].filter(Boolean).length;
   const clearFilters = () => {
-    setIntern(ALL);
-    setStatus(ALL);
-    setPriority(ALL);
-    setIndustry(ALL);
-    setFrom("");
-    setTo("");
-    setMinHours("");
-    setMaxHours("");
+    setIntern(ALL); setStatus(ALL); setPriority(ALL); setIndustry(ALL);
+    setFrom(""); setTo(""); setMinHours(""); setMaxHours("");
+    setDIntern(ALL); setDStatus(ALL); setDPriority(ALL); setDIndustry(ALL);
+    setDFrom(""); setDTo(""); setDMinHours(""); setDMaxHours("");
   };
 
   return (
