@@ -3,11 +3,14 @@ import type { LucideIcon } from "lucide-react";
 import appBg from "@/assets/app-bg.jpg";
 import appBg2 from "@/assets/app-bg-2.jpg";
 import appBg3 from "@/assets/app-bg-3.jpg";
+import appBg4 from "@/assets/app-bg-4.jpg";
+import appBg5 from "@/assets/app-bg-5.jpg";
 import {
   Activity as ActivityIcon,
   Bell,
   CalendarClock,
   LayoutDashboard,
+  LogOut,
   Menu,
   Settings as SettingsIcon,
   ShieldCheck,
@@ -34,9 +37,9 @@ const NAV: NavItem[] = [
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useRouterState({ select: (s) => s.location });
-  const { settings, unreadCount } = useCrm();
+  const { settings, unreadCount, isFounder } = useCrm();
   const items: NavItem[] = [...NAV];
-  if (settings.role === "Founder") {
+  if (isFounder) {
     items.splice(6, 0, { to: "/admin", label: "Admin Panel", icon: ShieldCheck });
   }
 
@@ -65,6 +68,21 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
         );
       })}
     </nav>
+  );
+}
+
+function AccountChip() {
+  const { settings, isFounder, currentIntern, signOut } = useCrm();
+  return (
+    <div className="mx-3 mt-4 rounded-xl bg-sidebar-accent/60 p-3">
+      <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
+        {isFounder ? settings.adminId : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
+      </p>
+      <p className="text-xs text-sidebar-foreground/60">{isFounder ? "Admin access" : "Intern access"}</p>
+      <Button variant="secondary" size="sm" className="mt-2 w-full" onClick={signOut}>
+        <LogOut className="size-4" /> Sign out
+      </Button>
+    </div>
   );
 }
 
@@ -106,11 +124,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
           loading="lazy"
           className="absolute inset-0 size-full object-cover opacity-70 mix-blend-soft-light"
         />
+        <img
+          src={appBg4}
+          alt=""
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute inset-0 size-full object-cover opacity-45 mix-blend-screen"
+        />
+        <img
+          src={appBg5}
+          alt=""
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-25 mix-blend-soft-light"
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-accent/70 backdrop-blur-[2px]" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_80%_0%,color-mix(in_oklab,var(--color-primary)_12%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-chart-2)_10%,transparent),transparent)]" />
       </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
         <Brand />
+        <AccountChip />
         <NavList />
         <div className="mt-auto px-6 py-5 text-xs text-sidebar-foreground/50">MVP demo · local data</div>
       </aside>
@@ -125,6 +160,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <SheetContent side="left" className="w-72 border-0 bg-sidebar p-0">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <Brand />
+            <AccountChip />
             <NavList onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>

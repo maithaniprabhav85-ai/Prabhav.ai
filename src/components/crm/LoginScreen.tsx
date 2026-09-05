@@ -2,6 +2,8 @@ import { LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import appBg from "@/assets/app-bg.jpg";
+import appBg4 from "@/assets/app-bg-4.jpg";
+import appBg5 from "@/assets/app-bg-5.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +14,14 @@ export function LoginScreen() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [mode, setMode] = useState<"admin" | "intern">("admin");
+
+  const pickMode = (next: "admin" | "intern") => {
+    setMode(next);
+    setError("");
+    setUserId(next === "admin" ? settings.adminId : "Intern 1");
+    setPassword("");
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +41,8 @@ export function LoginScreen() {
     <div className="relative grid min-h-screen place-items-center px-4 py-10">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
         <img src={appBg} alt="" width={1920} height={1280} className="size-full object-cover" />
+        <img src={appBg4} alt="" width={1920} height={1080} loading="lazy" className="absolute inset-0 size-full object-cover opacity-60 mix-blend-screen" />
+        <img src={appBg5} alt="" width={1920} height={1080} loading="lazy" className="absolute bottom-0 left-0 h-2/3 w-full object-cover opacity-25 mix-blend-soft-light" />
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/80 backdrop-blur-[2px]" />
       </div>
 
@@ -45,6 +57,27 @@ export function LoginScreen() {
           </div>
         </div>
 
+        <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
+          <Button
+            type="button"
+            variant={mode === "admin" ? "default" : "ghost"}
+            className="w-full"
+            aria-pressed={mode === "admin"}
+            onClick={() => pickMode("admin")}
+          >
+            Admin
+          </Button>
+          <Button
+            type="button"
+            variant={mode === "intern" ? "default" : "ghost"}
+            className="w-full"
+            aria-pressed={mode === "intern"}
+            onClick={() => pickMode("intern")}
+          >
+            Intern
+          </Button>
+        </div>
+
         <form onSubmit={submit} className="mt-6 grid gap-4">
           <div className="grid gap-1.5">
             <Label htmlFor="userId" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -55,7 +88,7 @@ export function LoginScreen() {
               maxLength={60}
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              placeholder="admin  or  Intern 1"
+              placeholder={mode === "admin" ? "admin" : "Intern 1"}
               autoComplete="username"
             />
           </div>

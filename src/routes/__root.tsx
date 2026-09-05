@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CrmProvider } from "@/lib/crm/store";
 import { AppLayout } from "@/components/crm/AppLayout";
+import { LoginScreen } from "@/components/crm/LoginScreen";
+import { useCrm } from "@/lib/crm/context";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -125,16 +127,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AuthGate({ children }: { children: ReactNode }) {
+  const { session, hydrated } = useCrm();
+  if (!hydrated) return null;
+  if (!session) return <LoginScreen />;
+  return <AppLayout>{children}</AppLayout>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <CrmProvider>
-        <AppLayout>
+        <AuthGate>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
-        </AppLayout>
+        </AuthGate>
         <Toaster />
       </CrmProvider>
     </QueryClientProvider>

@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function Admin() {
-  const { allStats, leads, followUps, settings } = useCrm();
+  const { allStats, leads, followUps, isFounder, settings } = useCrm();
   const [showFilters, setShowFilters] = useState(false);
   // Applied filters — only change when Apply is clicked.
   const [internFilter, setInternFilter] = useState(ALL);
@@ -60,12 +60,12 @@ function Admin() {
     setDIntern(ALL); setDStatus(ALL); setDMinHours(""); setDMaxHours(""); setDFromAt(""); setDToAt("");
   };
 
-  if (settings.role !== "Founder") {
+  if (!isFounder) {
     return (
       <>
         <PageHeader title="Admin Panel" />
-        <EmptyState title="Founder access only" body="Switch your role to Founder in Settings to view this page." />
-        <Button asChild className="mt-4"><Link to="/settings">Open settings</Link></Button>
+        <EmptyState title="Founder access only" body="This panel is for the admin account only. Sign out and sign in with the admin ID to open it." />
+        <Button asChild className="mt-4"><Link to="/settings">Go to settings</Link></Button>
       </>
     );
   }
