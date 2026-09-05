@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import appBg from "@/assets/app-bg.jpg";
 import appBg4 from "@/assets/app-bg-4.jpg";
 import appBg5 from "@/assets/app-bg-5.jpg";
+import crmBgMain from "@/assets/crm-bg-main.jpg.asset.json";
+import crmBgAccent from "@/assets/crm-bg-accent.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
