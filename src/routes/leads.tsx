@@ -39,15 +39,36 @@ const ALL = "all";
 function Leads() {
   const { leads, interns, deleteLead, settings } = useCrm();
   const [q, setQ] = useState("");
+  // Applied filters (drive the table) — only change when Apply is clicked.
   const [intern, setIntern] = useState(ALL);
   const [status, setStatus] = useState(ALL);
   const [priority, setPriority] = useState(ALL);
   const [industry, setIndustry] = useState(ALL);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
   const [minHours, setMinHours] = useState("");
   const [maxHours, setMaxHours] = useState("");
+  // Draft filters (bound to the inputs until Apply).
+  const [dIntern, setDIntern] = useState(ALL);
+  const [dStatus, setDStatus] = useState(ALL);
+  const [dPriority, setDPriority] = useState(ALL);
+  const [dIndustry, setDIndustry] = useState(ALL);
+  const [dFrom, setDFrom] = useState("");
+  const [dTo, setDTo] = useState("");
+  const [dMinHours, setDMinHours] = useState("");
+  const [dMaxHours, setDMaxHours] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const applyFilters = () => {
+    setIntern(dIntern);
+    setStatus(dStatus);
+    setPriority(dPriority);
+    setIndustry(dIndustry);
+    setFrom(dFrom);
+    setTo(dTo);
+    setMinHours(dMinHours);
+    setMaxHours(dMaxHours);
+  };
 
   const internName = (id: string) => interns.find((i) => i.id === id)?.code ?? "Unassigned";
 
