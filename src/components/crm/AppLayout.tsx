@@ -22,6 +22,8 @@ import {
 import { useState, type ReactNode } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { ChangePasswordDialog } from "@/components/crm/ChangePasswordDialog";
+
 import { useCrm } from "@/lib/crm/context";
 import { cn } from "@/lib/utils";
 
