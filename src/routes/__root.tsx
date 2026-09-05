@@ -125,16 +125,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AuthGate({ children }: { children: ReactNode }) {
+  const { session, hydrated } = useCrm();
+  if (!hydrated) return null;
+  if (!session) return <LoginScreen />;
+  return <AppLayout>{children}</AppLayout>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <CrmProvider>
-        <AppLayout>
+        <AuthGate>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
-        </AppLayout>
+        </AuthGate>
         <Toaster />
       </CrmProvider>
     </QueryClientProvider>
