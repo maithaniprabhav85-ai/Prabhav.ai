@@ -196,7 +196,7 @@ function Leads() {
                   <td className={cell}><PriorityPill priority={l.priority} /></td>
                   <td className={cell}>{internName(l.internId)}</td>
                   <td className={cell}>{l.nextFollowUp || "—"}</td>
-                  <td className={`${cell} text-xs text-muted-foreground`}>{new Date(l.createdAt).toLocaleString()}</td>
+                  <td className={`${cell} text-xs text-muted-foreground`}>{formatDateTime(l.createdAt)}</td>
                   <td className={cell}>
                     <div className="flex justify-end gap-1">
                       <LeadDialog

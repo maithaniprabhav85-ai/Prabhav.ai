@@ -115,7 +115,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     }
     for (const a of visibleActivities.slice(0, 5)) {
       if (a.type === "lead_updated" || a.type === "followup_completed") {
-        notifications.push({ id: `n-act-${a.id}`, kind: "update", title: a.message, body: new Date(a.createdAt).toLocaleString(), at: a.createdAt });
+        notifications.push({ id: `n-act-${a.id}`, kind: "update", title: a.message, body: formatDateTime(a.createdAt), at: a.createdAt });
       }
     }
     notifications.sort((a, b) => b.at.localeCompare(a.at));

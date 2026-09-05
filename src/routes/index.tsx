@@ -91,7 +91,7 @@ function Dashboard() {
               {activities.slice(0, 7).map((a) => (
                 <li key={a.id} className="px-5 py-3">
                   <p className="text-sm text-foreground">{a.message}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{new Date(a.createdAt).toLocaleString()}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{formatDateTime(a.createdAt)}</p>
                 </li>
               ))}
             </ul>

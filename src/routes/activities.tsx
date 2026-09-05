@@ -49,7 +49,7 @@ function Activities() {
               <div className="min-w-0">
                 <p className="text-sm text-foreground">{a.message}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  {new Date(a.createdAt).toLocaleString()} · {a.type.replace(/_/g, " ")}
+                  {formatDateTime(a.createdAt)} · {a.type.replace(/_/g, " ")}
                 </p>
               </div>
             </li>
