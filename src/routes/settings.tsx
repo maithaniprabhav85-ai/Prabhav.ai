@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
+import { ChangePasswordDialog } from "@/components/crm/ChangePasswordDialog";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
