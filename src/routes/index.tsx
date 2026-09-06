@@ -1,7 +1,7 @@
 import { formatDateTime } from "@/lib/format";
+import crmHero from "@/assets/crm-hero.jpg.asset.json";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarClock, CheckCircle2, Percent, TrendingUp, Users } from "lucide-react";
-import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatCard, StatusPill } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -35,15 +35,27 @@ function Dashboard() {
 
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        subtitle="Team-wide pipeline health and intern performance"
-        action={
-          <Button asChild>
+      <section className="relative mb-6 overflow-hidden rounded-2xl">
+        <img
+          src={crmHero.url}
+          alt="Abstract dark blue digital business workspace"
+          width={1920}
+          height={720}
+          className="absolute inset-0 size-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,var(--navy)_20%,color-mix(in_oklab,var(--navy)_70%,transparent))]" />
+        <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 px-5 py-8 sm:px-8 sm:py-10">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-foreground/70">InternLead CRM</p>
+            <h1 className="mt-1 text-2xl font-bold text-navy-foreground sm:text-3xl">Dashboard</h1>
+            <p className="mt-1 text-sm text-navy-foreground/75">Team-wide pipeline health and intern performance</p>
+          </div>
+          <Button asChild size="lg">
             <Link to="/leads">Open leads</Link>
           </Button>
-        }
-      />
+        </div>
+      </section>
+
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Total leads" value={leads.length} icon={Users} hint={`${leads.length - contacted} still untouched`} />
