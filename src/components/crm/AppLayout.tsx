@@ -54,11 +54,11 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             to={item.to}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              active && "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary",
+              "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-all duration-150 ease-out hover:bg-[#2563EB]/10 hover:text-[#2563EB] hover:brightness-105",
+              active && "bg-[#2563EB]/15 text-[#2563EB] hover:bg-[#2563EB]/20",
             )}
           >
-            <item.icon className="size-4 shrink-0" />
+            <item.icon className="size-4 shrink-0 transition-colors duration-150 group-hover:text-[#2563EB]" />
             <span className="flex-1 truncate">{item.label}</span>
             {item.to === "/notifications" && unreadCount > 0 && (
               <span className="rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
