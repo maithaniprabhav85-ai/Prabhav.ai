@@ -80,13 +80,15 @@ function AccountChip() {
         {isFounder ? settings.adminId : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
       </p>
       <p className="text-xs text-sidebar-foreground/60">{isFounder ? "Admin access" : "Intern access"}</p>
-      <ChangePasswordDialog
-        trigger={
-          <Button variant="secondary" size="sm" className="mt-2 w-full">
-            <KeyRound className="size-4" /> Change password
-          </Button>
-        }
-      />
+      {isFounder && (
+        <ChangePasswordDialog
+          trigger={
+            <Button variant="secondary" size="sm" className="mt-2 w-full">
+              <KeyRound className="size-4" /> Change password
+            </Button>
+          }
+        />
+      )}
       <Button variant="secondary" size="sm" className="mt-2 w-full" onClick={signOut}>
         <LogOut className="size-4" /> Sign out
       </Button>
