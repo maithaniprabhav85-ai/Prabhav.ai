@@ -29,9 +29,7 @@ const NAV: NavItem[] = [
   { to: "/leads", label: "Leads", icon: Users },
   { to: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
   { to: "/activities", label: "Activities", icon: ActivityIcon },
-  { to: "/interns", label: "Intern Profiles", icon: UsersRound },
   { to: "/notifications", label: "Notifications", icon: Bell },
-  { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
@@ -39,7 +37,11 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const { settings, unreadCount, isFounder } = useCrm();
   const items: NavItem[] = [...NAV];
   if (isFounder) {
-    items.splice(6, 0, { to: "/admin", label: "Admin Panel", icon: ShieldCheck });
+    items.push({ to: "/interns", label: "Intern Profiles", icon: UsersRound });
+    items.push({ to: "/admin", label: "Admin Panel", icon: ShieldCheck });
+    items.push({ to: "/settings", label: "Settings", icon: SettingsIcon });
+  } else {
+    items.push({ to: "/interns", label: "Progress", icon: UsersRound });
   }
 
   return (
@@ -78,13 +80,15 @@ function AccountChip() {
         {isFounder ? settings.adminId : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
       </p>
       <p className="text-xs text-sidebar-foreground/60">{isFounder ? "Admin access" : "Intern access"}</p>
-      <ChangePasswordDialog
-        trigger={
-          <Button variant="secondary" size="sm" className="mt-2 w-full">
-            <KeyRound className="size-4" /> Change password
-          </Button>
-        }
-      />
+      {isFounder && (
+        <ChangePasswordDialog
+          trigger={
+            <Button variant="secondary" size="sm" className="mt-2 w-full">
+              <KeyRound className="size-4" /> Change password
+            </Button>
+          }
+        />
+      )}
       <Button variant="secondary" size="sm" className="mt-2 w-full" onClick={signOut}>
         <LogOut className="size-4" /> Sign out
       </Button>
