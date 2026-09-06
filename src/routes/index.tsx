@@ -1,7 +1,7 @@
 import { formatDateTime } from "@/lib/format";
+import crmHero from "@/assets/crm-hero.jpg.asset.json";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarClock, CheckCircle2, Percent, TrendingUp, Users } from "lucide-react";
-import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatCard, StatusPill } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
