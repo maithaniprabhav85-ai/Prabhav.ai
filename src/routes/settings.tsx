@@ -26,7 +26,13 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { settings, updateSettings, resetDemoData } = useCrm();
+  const { settings, updateSettings, resetDemoData, isFounder } = useCrm();
+
+  if (!isFounder) {
+    return (
+      <PageHeader title="Settings" subtitle="Settings are only available to the admin. Sign in as admin to make changes." />
+    );
+  }
 
   return (
     <>
