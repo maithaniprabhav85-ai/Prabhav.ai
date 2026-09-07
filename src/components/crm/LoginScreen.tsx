@@ -17,7 +17,7 @@ export function LoginScreen() {
   const pickMode = (next: "admin" | "intern") => {
     setMode(next);
     setError("");
-    setUserId(next === "admin" ? settings.adminId : "Intern 1");
+    setUserId("");
     setPassword("");
   };
 

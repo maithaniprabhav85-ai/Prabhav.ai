@@ -39,7 +39,6 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   if (isFounder) {
     items.push({ to: "/interns", label: "Intern Profiles", icon: UsersRound });
     items.push({ to: "/admin", label: "Admin Panel", icon: ShieldCheck });
-    items.push({ to: "/settings", label: "Settings", icon: SettingsIcon });
   } else {
     items.push({ to: "/interns", label: "Progress", icon: UsersRound });
   }
