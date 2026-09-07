@@ -31,7 +31,7 @@ export function LoginScreen() {
       setError("");
       toast.success("Signed in");
     } else {
-      setError("Wrong ID or password. Interns sign in with their assignment ID, e.g. Intern 1.");
+      setError("Wrong ID or password.");
     }
   };
 
@@ -49,7 +49,7 @@ export function LoginScreen() {
           </span>
           <div>
             <h1 className="text-xl font-bold text-navy">{settings.companyName}</h1>
-            <p className="text-xs text-muted-foreground">Secure sign in — admin and interns</p>
+            <p className="text-xs text-muted-foreground">Sign in</p>
           </div>
         </div>
 
@@ -84,7 +84,6 @@ export function LoginScreen() {
               maxLength={60}
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              placeholder={mode === "admin" ? "admin" : "Intern 1"}
               autoComplete="username"
             />
           </div>
@@ -107,12 +106,6 @@ export function LoginScreen() {
           </Button>
         </form>
 
-        <div className="mt-5 rounded-lg bg-muted px-4 py-3 text-xs text-muted-foreground">
-          <p className="font-semibold text-navy">Demo logins</p>
-          <p className="mt-1">Admin — ID <strong>admin</strong>, password <strong>admin123</strong></p>
-          <p>Intern — ID <strong>Intern 1</strong>, password <strong>intern1</strong> (Intern 2 → intern2, …)</p>
-          <p className="mt-1">Interns only see their own leads, follow-ups and activity.</p>
-        </div>
       </div>
     </div>
   );
