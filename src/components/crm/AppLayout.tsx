@@ -9,7 +9,6 @@ import {
 
   LogOut,
   Menu,
-  Settings as SettingsIcon,
   ShieldCheck,
   Users,
   UsersRound,
