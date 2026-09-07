@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/context";
-import { LEAD_STATUSES } from "@/lib/crm/types";
+import { LEAD_PRIORITIES, LEAD_STATUSES } from "@/lib/crm/types";
+import { QUICK_RANGES, quickRange } from "@/lib/crm/quickRange";
 
 const ALL = "all";
 
@@ -32,6 +33,7 @@ function Admin() {
   // Applied filters — only change when Apply is clicked.
   const [internFilter, setInternFilter] = useState(ALL);
   const [statusFilter, setStatusFilter] = useState(ALL);
+  const [priorityFilter, setPriorityFilter] = useState(ALL);
   const [sortBy, setSortBy] = useState("converted");
   const [minHours, setMinHours] = useState("");
   const [maxHours, setMaxHours] = useState("");
@@ -40,6 +42,7 @@ function Admin() {
   // Draft filters (bound to the inputs until Apply).
   const [dIntern, setDIntern] = useState(ALL);
   const [dStatus, setDStatus] = useState(ALL);
+  const [dPriority, setDPriority] = useState(ALL);
   const [dSortBy, setDSortBy] = useState("converted");
   const [dMinHours, setDMinHours] = useState("");
   const [dMaxHours, setDMaxHours] = useState("");
@@ -49,6 +52,7 @@ function Admin() {
   const applyFilters = () => {
     setInternFilter(dIntern);
     setStatusFilter(dStatus);
+    setPriorityFilter(dPriority);
     setSortBy(dSortBy);
     setMinHours(dMinHours);
     setMaxHours(dMaxHours);
@@ -56,8 +60,8 @@ function Admin() {
     setToAt(dToAt);
   };
   const clearAll = () => {
-    setInternFilter(ALL); setStatusFilter(ALL); setMinHours(""); setMaxHours(""); setFromAt(""); setToAt("");
-    setDIntern(ALL); setDStatus(ALL); setDMinHours(""); setDMaxHours(""); setDFromAt(""); setDToAt("");
+    setInternFilter(ALL); setStatusFilter(ALL); setPriorityFilter(ALL); setMinHours(""); setMaxHours(""); setFromAt(""); setToAt("");
+    setDIntern(ALL); setDStatus(ALL); setDPriority(ALL); setDMinHours(""); setDMaxHours(""); setDFromAt(""); setDToAt("");
   };
 
   if (!isFounder) {
@@ -83,12 +87,13 @@ function Admin() {
     (l) =>
       allowedInterns.has(l.internId) &&
       (statusFilter === ALL || l.status === statusFilter) &&
+      (priorityFilter === ALL || l.priority === priorityFilter) &&
       inRange(l.createdAt),
   );
   const visibleFollowUps = followUps.filter((f) => allowedInterns.has(f.internId) && inRange(f.completedAt));
   const converted = visibleLeads.filter((l) => l.status === "Converted").length;
   const activeFilters =
-    [internFilter, statusFilter].filter((v) => v !== ALL).length + [minHours, maxHours, fromAt, toAt].filter(Boolean).length;
+    [internFilter, statusFilter, priorityFilter].filter((v) => v !== ALL).length + [minHours, maxHours, fromAt, toAt].filter(Boolean).length;
   const sorted = [...visibleStats].sort((a, b) =>
     sortBy === "converted"
       ? b.converted - a.converted || b.followUpRate - a.followUpRate
@@ -120,7 +125,7 @@ function Admin() {
 
       {showFilters && (
         <div className="surface-card mb-5 p-4">
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
             <FilterSelect
               label="Intern"
               value={dIntern}
@@ -128,6 +133,13 @@ function Admin() {
               options={allStats.map((s) => ({ value: s.intern.id, label: s.intern.code }))}
             />
             <FilterSelect label="Lead status" value={dStatus} onChange={setDStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
+            <FilterSelect
+              label="Lead priority"
+              value={dPriority}
+              onChange={setDPriority}
+              allLabel="All priorities"
+              options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))}
+            />
             <FilterSelect
               label="Sort leaderboard by"
               value={dSortBy}
@@ -147,19 +159,37 @@ function Admin() {
               <Input type="number" min={0} value={dMaxHours} onChange={(e) => setDMaxHours(e.target.value)} placeholder="Any" />
             </Field>
             <Field label="Activity from (date & time)">
-              <Input type="datetime-local" value={dFromAt} onChange={(e) => setDFromAt(e.target.value)} />
+              <Input className="w-full min-w-0" type="datetime-local" value={dFromAt} onChange={(e) => setDFromAt(e.target.value)} />
             </Field>
             <Field label="Activity to (date & time)">
-              <Input type="datetime-local" value={dToAt} onChange={(e) => setDToAt(e.target.value)} />
+              <Input className="w-full min-w-0" type="datetime-local" value={dToAt} onChange={(e) => setDToAt(e.target.value)} />
             </Field>
           </div>
-          <div className="mt-3 flex justify-end gap-2 border-t pt-3">
-            <Button variant="ghost" size="sm" onClick={clearAll}>
-              <X className="size-4" /> Reset
-            </Button>
-            <Button size="sm" onClick={applyFilters}>
-              <Check className="size-4" /> Apply filters
-            </Button>
+          <div className="mt-3 flex flex-col gap-3 border-t pt-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Quick</span>
+              {QUICK_RANGES.map((r) => (
+                <Button
+                  key={r.key}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const [f, t] = quickRange(r.key);
+                    setDFromAt(f); setDToAt(t); setFromAt(f); setToAt(t);
+                  }}
+                >
+                  {r.label}
+                </Button>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" size="sm" onClick={clearAll}>
+                <X className="size-4" /> Reset filters
+              </Button>
+              <Button size="sm" onClick={applyFilters}>
+                <Check className="size-4" /> Apply filters
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -208,12 +238,14 @@ function FilterSelect({
   onChange,
   options,
   includeAll = true,
+  allLabel = "All",
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
   includeAll?: boolean;
+  allLabel?: string;
 }) {
   return (
     <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -221,7 +253,7 @@ function FilterSelect({
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger><SelectValue /></SelectTrigger>
         <SelectContent>
-          {includeAll && <SelectItem value={ALL}>All</SelectItem>}
+          {includeAll && <SelectItem value={ALL}>{allLabel}</SelectItem>}
           {options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
         </SelectContent>
       </Select>
