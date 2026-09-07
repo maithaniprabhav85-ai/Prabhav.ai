@@ -192,7 +192,7 @@ function Leads() {
         <EmptyState title="No leads found" body="No leads match your search or filters. Try Reset filters to see everything." />
       ) : (
         <div className="surface-card overflow-x-auto">
-          <table className="w-full min-w-[900px] text-sm">
+          <table className="w-full min-w-[1000px] text-sm">
             <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 {["Company", "Contact", "Industry", "Status", "Priority", "Intern", "Next follow-up", "Created", ""].map((h) => (
