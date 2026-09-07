@@ -1,6 +1,6 @@
 import { formatDateTime } from "@/lib/format";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
+import { Check, Download, Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/context";
+import { downloadLeadPdf } from "@/lib/crm/leadPdf";
+import { QUICK_RANGES, quickRange } from "@/lib/crm/quickRange";
 import { INDUSTRIES, LEAD_PRIORITIES, LEAD_STATUSES } from "@/lib/crm/types";
 
 export const Route = createFileRoute("/leads")({
@@ -134,18 +136,18 @@ function Leads() {
             )}
           </div>
         </div>
-        <div className={`mt-3 gap-3 sm:grid-cols-2 xl:grid-cols-6 ${showFilters ? "grid" : "hidden"}`}>
+        <div className={`mt-3 grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 ${showFilters ? "grid" : "hidden"}`}>
           <FilterSelect label="Intern" value={dIntern} onChange={setDIntern} options={interns.map((i) => ({ value: i.id, label: i.code }))} />
           <FilterSelect label="Status" value={dStatus} onChange={setDStatus} options={LEAD_STATUSES.map((s) => ({ value: s, label: s }))} />
           <FilterSelect label="Priority" value={dPriority} onChange={setDPriority} options={LEAD_PRIORITIES.map((p) => ({ value: p, label: p }))} />
           <FilterSelect label="Industry" value={dIndustry} onChange={setDIndustry} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
-          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <label className="grid min-w-0 gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created from (date & time)
-            <Input type="datetime-local" value={dFrom} onChange={(e) => setDFrom(e.target.value)} />
+            <Input className="w-full min-w-0" type="datetime-local" value={dFrom} onChange={(e) => setDFrom(e.target.value)} />
           </label>
-          <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <label className="grid min-w-0 gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Created to (date & time)
-            <Input type="datetime-local" value={dTo} onChange={(e) => setDTo(e.target.value)} />
+            <Input className="w-full min-w-0" type="datetime-local" value={dTo} onChange={(e) => setDTo(e.target.value)} />
           </label>
           <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Min intern hours
@@ -157,19 +159,37 @@ function Leads() {
           </label>
         </div>
         {showFilters && (
-          <div className="mt-3 flex justify-end gap-2 border-t pt-3">
+          <div className="mt-3 flex flex-col gap-3 border-t pt-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Quick</span>
+              {QUICK_RANGES.map((r) => (
+                <Button
+                  key={r.key}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const [f, t] = quickRange(r.key);
+                    setDFrom(f); setDTo(t); setFrom(f); setTo(t);
+                  }}
+                >
+                  {r.label}
+                </Button>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2">
             <Button variant="ghost" size="sm" onClick={clearFilters}>
-              <X className="size-4" /> Reset
+              <X className="size-4" /> Reset filters
             </Button>
             <Button size="sm" onClick={applyFilters}>
               <Check className="size-4" /> Apply filters
             </Button>
+            </div>
           </div>
         )}
       </div>
 
       {filtered.length === 0 ? (
-        <EmptyState title="No leads match these filters" body="Try clearing search or date range." />
+        <EmptyState title="No leads found" body="No leads match your search or filters. Try Reset filters to see everything." />
       ) : (
         <div className="surface-card overflow-x-auto">
           <table className="w-full min-w-[900px] text-sm">
@@ -200,6 +220,18 @@ function Leads() {
                   <td className={`${cell} text-xs text-muted-foreground`}>{formatDateTime(l.createdAt)}</td>
                   <td className={cell}>
                     <div className="flex justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Download ${l.company} as PDF`}
+                        onClick={() => {
+                          const ok = downloadLeadPdf(l, internName(l.internId));
+                          if (ok) toast.success(`Preparing PDF for ${l.company}`);
+                          else toast.error("Allow pop-ups to download the PDF");
+                        }}
+                      >
+                        <Download className="size-4" />
+                      </Button>
                       <LeadDialog
                         lead={l}
                         trigger={
