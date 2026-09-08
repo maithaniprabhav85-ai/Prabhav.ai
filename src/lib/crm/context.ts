@@ -1,5 +1,5 @@
 import { createContext, useContext, type Context } from "react";
-import type { Activity, CrmData, FollowUpLog, Intern, Lead, Session, Settings } from "./types";
+import type { Activity, CrmData, FollowUpLog, Intern, Lead, Session, Settings, WorkSession } from "./types";
 
 export interface InternStats {
   intern: Intern;
@@ -7,7 +7,15 @@ export interface InternStats {
   completedFollowUps: number;
   followUpRate: number;
   converted: number;
+  conversionRate: number;
   hours: number;
+  todayHours: number;
+  totalHours: number;
+}
+
+export interface InternInsights {
+  strengths: string[];
+  weaknesses: string[];
 }
 
 export interface CrmNotification {
@@ -37,7 +45,14 @@ export interface Ctx {
   addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
-  addIntern: (i: Omit<Intern, "id" | "code">) => void;
+  archiveLead: (id: string, archived: boolean) => void;
+  allLeads: Lead[];
+  workSessions: WorkSession[];
+  activeSession: WorkSession | null;
+  startWork: () => void;
+  stopWork: () => void;
+  insightsFor: (id: string) => InternInsights;
+  addIntern: (i: Omit<Intern, "id" | "code">) => { ok: boolean; error?: string };
   updateIntern: (id: string, patch: Partial<Omit<Intern, "id" | "code">>) => void;
   deleteIntern: (id: string) => void;
   completeFollowUp: (leadId: string) => void;

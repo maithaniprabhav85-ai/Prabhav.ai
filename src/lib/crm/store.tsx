@@ -1,8 +1,8 @@
 import { formatDateTime } from "@/lib/format";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, Intern, Lead, Session } from "./types";
-import { CrmContext, type Ctx, type CrmNotification, type InternStats } from "./context";
+import type { Activity, CrmData, Intern, Lead, Session, WorkSession } from "./types";
+import { CrmContext, type Ctx, type CrmNotification, type InternInsights, type InternStats } from "./context";
 
 export type { InternStats, CrmNotification } from "./context";
 
@@ -27,6 +27,7 @@ function load(): CrmData {
       leads: parsed.leads ?? seedData.leads,
       activities: parsed.activities ?? seedData.activities,
       followUps: parsed.followUps ?? seedData.followUps,
+      workSessions: parsed.workSessions ?? [],
       readNotificationIds: parsed.readNotificationIds ?? [],
       session: parsed.session ?? null,
       settings: { ...seedData.settings, ...parsed.settings },
@@ -68,25 +69,60 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       isFounder || !currentIntern ? rows : rows.filter((r) => r.internId === currentIntern.id);
 
     const visibleInterns = isFounder || !currentIntern ? data.interns : [currentIntern];
-    const visibleLeads = mine(data.leads);
+    const allVisibleLeads = mine(data.leads);
+    const visibleLeads = allVisibleLeads.filter((l) => !l.archived);
     const visibleActivities = mine(data.activities);
     const visibleFollowUps = mine(data.followUps);
 
+    const sessionsOf = (internId: string) => data.workSessions.filter((w) => w.internId === internId);
+    const hoursOf = (rows: WorkSession[]) =>
+      rows.reduce((sum, w) => sum + Math.max(0, (new Date(w.end ?? new Date().toISOString()).getTime() - new Date(w.start).getTime())), 0) / 3600000;
+
     const statsFor = (intern: Intern): InternStats => {
-      const assignedLeads = data.leads.filter((l) => l.internId === intern.id);
+      const assignedLeads = data.leads.filter((l) => l.internId === intern.id && !l.archived);
       const completed = data.followUps.filter((f) => f.internId === intern.id).length;
       const target = assignedLeads.length * 2 || 1;
+      const converted = assignedLeads.filter((l) => l.status === "Converted").length;
+      const rows = sessionsOf(intern.id);
+      const t = today();
+      const loggedTotal = hoursOf(rows);
+      const loggedToday = hoursOf(rows.filter((w) => w.start.slice(0, 10) === t));
+      const totalHours = Math.round((intern.workingHours + loggedTotal) * 10) / 10;
       return {
         intern,
         assigned: assignedLeads.length,
         completedFollowUps: completed,
         followUpRate: Math.min(100, Math.round((completed / target) * 100)),
-        converted: assignedLeads.filter((l) => l.status === "Converted").length,
-        hours: intern.workingHours,
+        converted,
+        conversionRate: assignedLeads.length ? Math.round((converted / assignedLeads.length) * 100) : 0,
+        hours: totalHours,
+        totalHours,
+        todayHours: Math.round(loggedToday * 10) / 10,
       };
     };
 
     const allStats = visibleInterns.map(statsFor);
+
+    const insightsFor = (id: string): InternInsights => {
+      const s = allStats.find((x) => x.intern.id === id) ?? statsFor(data.interns.find((i) => i.id === id)!);
+      const strengths: string[] = [];
+      const weaknesses: string[] = [];
+      (s.conversionRate >= 25 ? strengths : weaknesses).push(
+        s.conversionRate >= 25 ? `Strong conversion performance (${s.conversionRate}%)` : `Conversion performance needs work (${s.conversionRate}%)`,
+      );
+      (s.followUpRate >= 60 ? strengths : weaknesses).push(
+        s.followUpRate >= 60 ? `Consistent follow-ups (${s.followUpRate}%)` : `Follow-ups falling behind (${s.followUpRate}%)`,
+      );
+      (s.assigned >= 3 ? strengths : weaknesses).push(
+        s.assigned >= 3 ? `Handles a healthy pipeline (${s.assigned} leads)` : `Light pipeline (${s.assigned} leads)`,
+      );
+      (s.totalHours >= 40 ? strengths : weaknesses).push(
+        s.totalHours >= 40 ? `Good time on the desk (${s.totalHours}h)` : `Low logged hours (${s.totalHours}h)`,
+      );
+      const overdue = data.leads.filter((l) => l.internId === id && !l.archived && l.nextFollowUp && l.nextFollowUp < today()).length;
+      if (overdue > 0) weaknesses.push(`${overdue} overdue follow-up${overdue > 1 ? "s" : ""}`);
+      return { strengths, weaknesses };
+    };
 
     const notifications: CrmNotification[] = [];
     const t = today();
@@ -126,6 +162,39 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       hydrated,
       interns: visibleInterns,
       leads: visibleLeads,
+      allLeads: allVisibleLeads,
+      workSessions: data.workSessions,
+      activeSession: currentIntern ? data.workSessions.find((w) => w.internId === currentIntern.id && !w.end) ?? null : null,
+      startWork: () =>
+        setData((d) => {
+          if (!currentIntern || d.workSessions.some((w) => w.internId === currentIntern.id && !w.end)) return d;
+          return { ...d, workSessions: [{ id: uid(), internId: currentIntern.id, start: new Date().toISOString() }, ...d.workSessions] };
+        }),
+      stopWork: () =>
+        setData((d) => {
+          if (!currentIntern) return d;
+          let stopped = false;
+          const workSessions = d.workSessions.map((w) => {
+            if (!stopped && w.internId === currentIntern.id && !w.end) {
+              stopped = true;
+              return { ...w, end: new Date().toISOString() };
+            }
+            return w;
+          });
+          return stopped ? { ...d, workSessions } : d;
+        }),
+      insightsFor,
+      archiveLead: (id: string, archived: boolean) =>
+        setData((d) => {
+          const lead = d.leads.find((l) => l.id === id);
+          if (!lead) return d;
+          return logActivity({ ...d, leads: d.leads.map((l) => (l.id === id ? { ...l, archived } : l)) }, {
+            leadId: id,
+            internId: lead.internId,
+            type: "lead_updated",
+            message: `${lead.company} was ${archived ? "archived" : "restored"}`,
+          });
+        }),
       activities: visibleActivities,
       followUps: visibleFollowUps,
       settings: data.settings,
@@ -214,7 +283,17 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             message: `Lead ${lead?.company ?? ""} was deleted`,
           });
         }),
-      addIntern: (i) =>
+      addIntern: (i) => {
+        const email = i.email.trim().toLowerCase();
+        const phone = i.phone.replace(/\s+/g, "");
+        const clash = data.interns.some(
+          (x) =>
+            (email && x.email.trim().toLowerCase() === email) ||
+            (phone && x.phone.replace(/\s+/g, "") === phone),
+        );
+        if (clash) {
+          return { ok: false, error: "This email or phone number is already in use. Please use a different email or phone number." };
+        }
         setData((d) => {
           const nextNum =
             d.interns.reduce((max, x) => Math.max(max, Number(x.code.replace(/[^0-9]/g, "")) || 0), 0) + 1;
@@ -224,7 +303,9 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             type: "intern_added",
             message: `${intern.code} (${intern.name}) joined ${intern.department}`,
           });
-        }),
+        });
+        return { ok: true };
+      },
       updateIntern: (id, patch) =>
         setData((d) => {
           const interns = d.interns.map((i) => (i.id === id ? { ...i, ...patch } : i));
