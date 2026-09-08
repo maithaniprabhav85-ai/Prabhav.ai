@@ -1,8 +1,8 @@
 import { formatDateTime } from "@/lib/format";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
-import type { Activity, CrmData, Intern, Lead, Session } from "./types";
-import { CrmContext, type Ctx, type CrmNotification, type InternStats } from "./context";
+import type { Activity, CrmData, Intern, Lead, Session, WorkSession } from "./types";
+import { CrmContext, type Ctx, type CrmNotification, type InternInsights, type InternStats } from "./context";
 
 export type { InternStats, CrmNotification } from "./context";
 
@@ -27,6 +27,7 @@ function load(): CrmData {
       leads: parsed.leads ?? seedData.leads,
       activities: parsed.activities ?? seedData.activities,
       followUps: parsed.followUps ?? seedData.followUps,
+      workSessions: parsed.workSessions ?? [],
       readNotificationIds: parsed.readNotificationIds ?? [],
       session: parsed.session ?? null,
       settings: { ...seedData.settings, ...parsed.settings },
