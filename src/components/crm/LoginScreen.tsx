@@ -42,13 +42,19 @@ export function LoginScreen() {
         <div className="absolute inset-0 bg-gradient-to-br from-navy/85 via-navy/70 to-primary/40" />
       </div>
 
-      <div className="surface-card w-full max-w-md p-7">
+      <div className="surface-card w-full max-w-md p-6 sm:p-8">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-black uppercase leading-tight tracking-[0.18em] text-navy sm:text-3xl">
+            Pixel Infinite AI
+          </h1>
+          <span className="mx-auto mt-3 block h-px w-16 bg-primary/40" />
+        </div>
         <div className="flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-lg bg-navy text-navy-foreground">
             <ShieldCheck className="size-5" />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-navy">{settings.companyName}</h1>
+            <p className="text-base font-bold text-navy">{settings.companyName}</p>
             <p className="text-xs text-muted-foreground">Sign in</p>
           </div>
         </div>
