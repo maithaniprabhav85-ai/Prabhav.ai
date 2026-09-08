@@ -162,6 +162,39 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       hydrated,
       interns: visibleInterns,
       leads: visibleLeads,
+      allLeads: allVisibleLeads,
+      workSessions: data.workSessions,
+      activeSession: currentIntern ? data.workSessions.find((w) => w.internId === currentIntern.id && !w.end) ?? null : null,
+      startWork: () =>
+        setData((d) => {
+          if (!currentIntern || d.workSessions.some((w) => w.internId === currentIntern.id && !w.end)) return d;
+          return { ...d, workSessions: [{ id: uid(), internId: currentIntern.id, start: new Date().toISOString() }, ...d.workSessions] };
+        }),
+      stopWork: () =>
+        setData((d) => {
+          if (!currentIntern) return d;
+          let stopped = false;
+          const workSessions = d.workSessions.map((w) => {
+            if (!stopped && w.internId === currentIntern.id && !w.end) {
+              stopped = true;
+              return { ...w, end: new Date().toISOString() };
+            }
+            return w;
+          });
+          return stopped ? { ...d, workSessions } : d;
+        }),
+      insightsFor,
+      archiveLead: (id: string, archived: boolean) =>
+        setData((d) => {
+          const lead = d.leads.find((l) => l.id === id);
+          if (!lead) return d;
+          return logActivity({ ...d, leads: d.leads.map((l) => (l.id === id ? { ...l, archived } : l)) }, {
+            leadId: id,
+            internId: lead.internId,
+            type: "lead_updated",
+            message: `${lead.company} was ${archived ? "archived" : "restored"}`,
+          });
+        }),
       activities: visibleActivities,
       followUps: visibleFollowUps,
       settings: data.settings,
