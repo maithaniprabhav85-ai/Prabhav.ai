@@ -69,25 +69,60 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       isFounder || !currentIntern ? rows : rows.filter((r) => r.internId === currentIntern.id);
 
     const visibleInterns = isFounder || !currentIntern ? data.interns : [currentIntern];
-    const visibleLeads = mine(data.leads);
+    const allVisibleLeads = mine(data.leads);
+    const visibleLeads = allVisibleLeads.filter((l) => !l.archived);
     const visibleActivities = mine(data.activities);
     const visibleFollowUps = mine(data.followUps);
 
+    const sessionsOf = (internId: string) => data.workSessions.filter((w) => w.internId === internId);
+    const hoursOf = (rows: WorkSession[]) =>
+      rows.reduce((sum, w) => sum + Math.max(0, (new Date(w.end ?? new Date().toISOString()).getTime() - new Date(w.start).getTime())), 0) / 3600000;
+
     const statsFor = (intern: Intern): InternStats => {
-      const assignedLeads = data.leads.filter((l) => l.internId === intern.id);
+      const assignedLeads = data.leads.filter((l) => l.internId === intern.id && !l.archived);
       const completed = data.followUps.filter((f) => f.internId === intern.id).length;
       const target = assignedLeads.length * 2 || 1;
+      const converted = assignedLeads.filter((l) => l.status === "Converted").length;
+      const rows = sessionsOf(intern.id);
+      const t = today();
+      const loggedTotal = hoursOf(rows);
+      const loggedToday = hoursOf(rows.filter((w) => w.start.slice(0, 10) === t));
+      const totalHours = Math.round((intern.workingHours + loggedTotal) * 10) / 10;
       return {
         intern,
         assigned: assignedLeads.length,
         completedFollowUps: completed,
         followUpRate: Math.min(100, Math.round((completed / target) * 100)),
-        converted: assignedLeads.filter((l) => l.status === "Converted").length,
-        hours: intern.workingHours,
+        converted,
+        conversionRate: assignedLeads.length ? Math.round((converted / assignedLeads.length) * 100) : 0,
+        hours: totalHours,
+        totalHours,
+        todayHours: Math.round(loggedToday * 10) / 10,
       };
     };
 
     const allStats = visibleInterns.map(statsFor);
+
+    const insightsFor = (id: string): InternInsights => {
+      const s = allStats.find((x) => x.intern.id === id) ?? statsFor(data.interns.find((i) => i.id === id)!);
+      const strengths: string[] = [];
+      const weaknesses: string[] = [];
+      (s.conversionRate >= 25 ? strengths : weaknesses).push(
+        s.conversionRate >= 25 ? `Strong conversion performance (${s.conversionRate}%)` : `Conversion performance needs work (${s.conversionRate}%)`,
+      );
+      (s.followUpRate >= 60 ? strengths : weaknesses).push(
+        s.followUpRate >= 60 ? `Consistent follow-ups (${s.followUpRate}%)` : `Follow-ups falling behind (${s.followUpRate}%)`,
+      );
+      (s.assigned >= 3 ? strengths : weaknesses).push(
+        s.assigned >= 3 ? `Handles a healthy pipeline (${s.assigned} leads)` : `Light pipeline (${s.assigned} leads)`,
+      );
+      (s.totalHours >= 40 ? strengths : weaknesses).push(
+        s.totalHours >= 40 ? `Good time on the desk (${s.totalHours}h)` : `Low logged hours (${s.totalHours}h)`,
+      );
+      const overdue = data.leads.filter((l) => l.internId === id && !l.archived && l.nextFollowUp && l.nextFollowUp < today()).length;
+      if (overdue > 0) weaknesses.push(`${overdue} overdue follow-up${overdue > 1 ? "s" : ""}`);
+      return { strengths, weaknesses };
+    };
 
     const notifications: CrmNotification[] = [];
     const t = today();
