@@ -283,7 +283,17 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             message: `Lead ${lead?.company ?? ""} was deleted`,
           });
         }),
-      addIntern: (i) =>
+      addIntern: (i) => {
+        const email = i.email.trim().toLowerCase();
+        const phone = i.phone.replace(/\s+/g, "");
+        const clash = data.interns.some(
+          (x) =>
+            (email && x.email.trim().toLowerCase() === email) ||
+            (phone && x.phone.replace(/\s+/g, "") === phone),
+        );
+        if (clash) {
+          return { ok: false, error: "This email or phone number is already in use. Please use a different email or phone number." };
+        }
         setData((d) => {
           const nextNum =
             d.interns.reduce((max, x) => Math.max(max, Number(x.code.replace(/[^0-9]/g, "")) || 0), 0) + 1;
@@ -293,7 +303,9 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             type: "intern_added",
             message: `${intern.code} (${intern.name}) joined ${intern.department}`,
           });
-        }),
+        });
+        return { ok: true };
+      },
       updateIntern: (id, patch) =>
         setData((d) => {
           const interns = d.interns.map((i) => (i.id === id ? { ...i, ...patch } : i));
