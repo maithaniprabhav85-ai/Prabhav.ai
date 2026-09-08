@@ -1,6 +1,6 @@
 import { formatDateTime } from "@/lib/format";
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, Download, Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Archive, ArchiveRestore, Check, Download, Pencil, Plus, Search, SlidersHorizontal, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
@@ -40,7 +40,9 @@ export const Route = createFileRoute("/leads")({
 const ALL = "all";
 
 function Leads() {
-  const { leads, interns, deleteLead, settings } = useCrm();
+  const { allLeads, interns, deleteLead, archiveLead, settings } = useCrm();
+  const [view, setView] = useState<"active" | "archived">("active");
+  const leads = useMemo(() => allLeads.filter((l) => (view === "archived" ? l.archived : !l.archived)), [allLeads, view]);
   const [q, setQ] = useState("");
   // Applied filters (drive the table) — only change when Apply is clicked.
   const [intern, setIntern] = useState(ALL);
