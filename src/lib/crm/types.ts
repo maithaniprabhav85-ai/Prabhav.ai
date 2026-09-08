@@ -37,8 +37,16 @@ export interface Intern {
   password: string;
 }
 
+export interface WorkSession {
+  id: string;
+  internId: string;
+  start: string; // ISO datetime
+  end?: string; // ISO datetime, absent while running
+}
+
 export interface Lead {
   id: string;
+  archived?: boolean;
   company: string;
   contactPerson: string;
   email: string;
@@ -95,6 +103,7 @@ export interface CrmData {
   leads: Lead[];
   activities: Activity[];
   followUps: FollowUpLog[];
+  workSessions: WorkSession[];
   settings: Settings;
   readNotificationIds: string[];
   session: Session | null;
