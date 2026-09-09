@@ -81,7 +81,7 @@ function Dashboard() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-navy">{s.intern.code}</p>
                   <p className="text-xs text-muted-foreground">
-                    {s.assigned} leads · {s.converted} converted · {s.hours}h
+                    {s.assigned} leads · {s.converted} converted · {s.conversionRate}% rate · {s.totalHours}h
                   </p>
                 </div>
                 <div className="mt-2 flex items-center gap-3">

@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { WorkTimer } from "@/components/crm/WorkTimer";
 import { useCrm } from "@/lib/crm/context";
 import { DEPARTMENTS, DESIGNATIONS, type Intern } from "@/lib/crm/types";
 
@@ -51,7 +52,8 @@ const emptyFilters = { department: ALL, designation: ALL, minHours: "", maxHours
 type Filters = typeof emptyFilters;
 
 function Interns() {
-  const { allStats, isFounder, deleteIntern } = useCrm();
+  const { allStats, isFounder, deleteIntern, currentIntern } = useCrm();
+  const myStats = currentIntern ? allStats.find((s) => s.intern.id === currentIntern.id) : undefined;
   const [showFilters, setShowFilters] = useState(false);
   const [draft, setDraft] = useState<Filters>(emptyFilters);
   const [applied, setApplied] = useState<Filters>(emptyFilters);
@@ -147,6 +149,8 @@ function Interns() {
         </div>
       )}
 
+      {myStats && <div className="mb-5"><WorkTimer todayHours={myStats.todayHours} totalHours={myStats.totalHours} /></div>}
+
       {visible.length === 0 ? (
         <EmptyState title="No interns match these filters" body="Change the filters and press Apply again." />
       ) : (
@@ -207,17 +211,27 @@ function Interns() {
                 <span className="rounded-full bg-muted px-2 py-1 text-navy">{s.intern.department}</span>
                 <span className="rounded-full bg-muted px-2 py-1 text-navy">{s.intern.designation}</span>
               </div>
-              <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
+              <dl className="mt-4 grid grid-cols-4 gap-2 text-center">
                 <Mini label="Leads" value={s.assigned} />
-                <Mini label="Converted" value={s.converted} />
-                <Mini label="Hours" value={s.hours} />
+                <Mini label="Won" value={s.converted} />
+                <Mini label="Today" value={s.todayHours} />
+                <Mini label="Hours" value={s.totalHours} />
               </dl>
-              <div className="mt-4">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Follow-up rate</span>
-                  <span className="font-semibold text-primary">{s.followUpRate}%</span>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Follow-up rate</span>
+                    <span className="font-semibold text-primary">{s.followUpRate}%</span>
+                  </div>
+                  <Progress value={s.followUpRate} className="mt-1.5 h-1.5" />
                 </div>
-                <Progress value={s.followUpRate} className="mt-1.5 h-1.5" />
+                <div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Conversion rate</span>
+                    <span className="font-semibold text-primary">{s.conversionRate}%</span>
+                  </div>
+                  <Progress value={s.conversionRate} className="mt-1.5 h-1.5" />
+                </div>
               </div>
               <p className="mt-3 text-xs text-muted-foreground">Started {s.intern.startDate}</p>
             </div>
@@ -272,7 +286,11 @@ function InternDialog({ intern, trigger }: { intern?: Intern; trigger?: React.Re
       updateIntern(intern.id, payload);
       toast.success(`${intern.code} updated`);
     } else {
-      addIntern(payload);
+      const res = addIntern(payload);
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
       toast.success(`${name} added`);
       setForm(blank);
     }
