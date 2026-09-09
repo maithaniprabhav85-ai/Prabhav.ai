@@ -216,7 +216,13 @@ function Leads() {
               {filtered.map((l) => (
                 <tr key={l.id} className="transition-colors hover:bg-muted/40">
                   <td className={cell}>
-                    <p className="font-semibold text-navy">{l.company}</p>
+                    <Link
+                      to="/company/$leadId"
+                      params={{ leadId: l.id }}
+                      className="font-semibold text-navy underline-offset-4 transition-colors hover:text-primary hover:underline"
+                    >
+                      {l.company}
+                    </Link>
                     <p className="text-xs text-muted-foreground">{l.location}</p>
                   </td>
                   <td className={cell}>
@@ -252,6 +258,17 @@ function Leads() {
                           </Button>
                         }
                       />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`${l.archived ? "Restore" : "Archive"} ${l.company}`}
+                        onClick={() => {
+                          archiveLead(l.id, !l.archived);
+                          toast.success(l.archived ? "Lead restored" : "Lead archived");
+                        }}
+                      >
+                        {l.archived ? <ArchiveRestore className="size-4" /> : <Archive className="size-4" />}
+                      </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="ghost" size="icon" aria-label={`Delete ${l.company}`}>
@@ -260,8 +277,10 @@ function Leads() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete {l.company}?</AlertDialogTitle>
-                            <AlertDialogDescription>This removes the lead from the demo data.</AlertDialogDescription>
+                            <AlertDialogTitle>Are you sure you want to delete this lead?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {l.company} will be removed permanently. Use Archive instead to keep it stored safely.
+                            </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
