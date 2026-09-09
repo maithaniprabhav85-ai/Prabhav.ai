@@ -109,15 +109,25 @@ function Leads() {
     <>
       <PageHeader
         title="Leads"
-        subtitle={`${filtered.length} of ${leads.length} leads`}
+        subtitle={`${filtered.length} of ${leads.length} ${view === "archived" ? "archived leads" : "leads"}`}
         action={
-          <LeadDialog
-            trigger={
-              <Button>
-                <Plus className="size-4" /> Add lead
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-lg bg-muted p-1">
+              <Button size="sm" variant={view === "active" ? "default" : "ghost"} onClick={() => setView("active")}>
+                Active
               </Button>
-            }
-          />
+              <Button size="sm" variant={view === "archived" ? "default" : "ghost"} onClick={() => setView("archived")}>
+                Archived
+              </Button>
+            </div>
+            <LeadDialog
+              trigger={
+                <Button>
+                  <Plus className="size-4" /> Add lead
+                </Button>
+              }
+            />
+          </div>
         }
       />
 
