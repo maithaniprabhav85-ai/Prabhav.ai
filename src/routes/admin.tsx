@@ -218,7 +218,8 @@ function Admin() {
                   {s.intern.code}
                 </Link>
                 <span className="text-xs text-muted-foreground">
-                  {s.assigned} leads · {s.completedFollowUps} follow-ups · {s.converted} converted · {s.hours}h
+                  {s.assigned} leads · {s.completedFollowUps} follow-ups · {s.converted} converted ({s.conversionRate}%) · {s.totalHours}h total ·{" "}
+                  {s.todayHours}h today
                 </span>
                 <div className="flex w-40 items-center gap-2">
                   <Progress value={s.followUpRate} className="h-1.5" />
