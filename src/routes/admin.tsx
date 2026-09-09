@@ -28,7 +28,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function Admin() {
-  const { allStats, leads, followUps, isFounder, settings } = useCrm();
+  const { allStats, leads, followUps, isFounder, settings, insightsFor } = useCrm();
   const [showFilters, setShowFilters] = useState(false);
   // Applied filters — only change when Apply is clicked.
   const [internFilter, setInternFilter] = useState(ALL);
@@ -228,6 +228,35 @@ function Admin() {
               </li>
             ))}
         </ul>
+      </section>
+
+      <section className="surface-card mt-6 overflow-hidden">
+        <div className="border-b px-5 py-4">
+          <h2 className="text-sm font-semibold text-navy">Strengths &amp; weaknesses</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">Based on follow-up, conversion, pipeline size and logged hours.</p>
+        </div>
+        {sorted.length === 0 ? (
+          <EmptyState title="No interns match these filters" />
+        ) : (
+          <div className="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3">
+            {sorted.map((s) => {
+              const ins = insightsFor(s.intern.id);
+              return (
+                <article key={s.intern.id} className="rounded-xl border bg-card p-4">
+                  <h3 className="text-sm font-semibold text-navy">{s.intern.code} · {s.intern.name}</h3>
+                  <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-emerald-600">Strong areas</p>
+                  <ul className="mt-1 space-y-1 text-xs text-foreground">
+                    {ins.strengths.length ? ins.strengths.map((t) => <li key={t}>• {t}</li>) : <li>• No standout strengths yet</li>}
+                  </ul>
+                  <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-destructive">Weak areas</p>
+                  <ul className="mt-1 space-y-1 text-xs text-foreground">
+                    {ins.weaknesses.length ? ins.weaknesses.map((t) => <li key={t}>• {t}</li>) : <li>• Nothing to flag</li>}
+                  </ul>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
     </>
   );
