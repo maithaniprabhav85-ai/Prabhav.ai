@@ -70,7 +70,13 @@ function InternProfile() {
               {myLeads.map((l) => (
                 <li key={l.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
                   <div>
-                    <p className="text-sm font-semibold text-navy">{l.company}</p>
+                    <Link
+                      to="/company/$leadId"
+                      params={{ leadId: l.id }}
+                      className="text-sm font-semibold text-navy underline-offset-4 transition-colors hover:text-primary hover:underline"
+                    >
+                      {l.company}
+                    </Link>
                     <p className="text-xs text-muted-foreground">
                       {l.industry} · next {l.nextFollowUp || "—"}
                     </p>
