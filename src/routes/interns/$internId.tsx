@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatCard, StatusPill } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
+import { WorkTimer } from "@/components/crm/WorkTimer";
 import { useCrm } from "@/lib/crm/context";
 
 export const Route = createFileRoute("/interns/$internId")({
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/interns/$internId")({
 
 function InternProfile() {
   const { internId } = Route.useParams();
-  const { internStats, leads, activities, data } = useCrm();
+  const { internStats, leads, activities, data, currentIntern } = useCrm();
   const stats = internStats(internId);
 
   if (!stats) {
@@ -45,13 +46,17 @@ function InternProfile() {
       </Button>
       <PageHeader title={intern.code} subtitle={`${intern.name} · ${intern.email} · ${intern.phone} · started ${intern.startDate}`} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
         <StatCard label="Assigned leads" value={stats.assigned} />
         <StatCard label="Follow-ups done" value={stats.completedFollowUps} />
         <StatCard label="Follow-up %" value={`${stats.followUpRate}%`} progress={stats.followUpRate} />
         <StatCard label="Converted" value={stats.converted} />
-        <StatCard label="Working hours" value={`${stats.hours}h`} hint="Logged since start date" />
+        <StatCard label="Conversion rate" value={`${stats.conversionRate}%`} progress={stats.conversionRate} />
+        <StatCard label="Working hours" value={`${stats.totalHours}h`} hint={`${stats.todayHours}h today`} />
       </div>
+
+      {currentIntern?.id === internId && <WorkTimer todayHours={stats.todayHours} totalHours={stats.totalHours} />}
+
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
         <section className="surface-card overflow-hidden lg:col-span-3">
