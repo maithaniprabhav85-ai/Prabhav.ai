@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { WorkTimer } from "@/components/crm/WorkTimer";
 import { useCrm } from "@/lib/crm/context";
 import { DEPARTMENTS, DESIGNATIONS, type Intern } from "@/lib/crm/types";
 
@@ -51,7 +52,8 @@ const emptyFilters = { department: ALL, designation: ALL, minHours: "", maxHours
 type Filters = typeof emptyFilters;
 
 function Interns() {
-  const { allStats, isFounder, deleteIntern } = useCrm();
+  const { allStats, isFounder, deleteIntern, currentIntern } = useCrm();
+  const myStats = currentIntern ? allStats.find((s) => s.intern.id === currentIntern.id) : undefined;
   const [showFilters, setShowFilters] = useState(false);
   const [draft, setDraft] = useState<Filters>(emptyFilters);
   const [applied, setApplied] = useState<Filters>(emptyFilters);
@@ -146,6 +148,8 @@ function Interns() {
           </div>
         </div>
       )}
+
+      {myStats && <div className="mb-5"><WorkTimer todayHours={myStats.todayHours} totalHours={myStats.totalHours} /></div>}
 
       {visible.length === 0 ? (
         <EmptyState title="No interns match these filters" body="Change the filters and press Apply again." />
