@@ -9,9 +9,9 @@ import { formatDateTime } from "@/lib/format";
 export const Route = createFileRoute("/company/$leadId")({
   head: () => ({
     meta: [
-      { title: "Company details — InternLead CRM" },
+      { title: "Company details — LeadPilot CRM" },
       { name: "description", content: "Full company profile with contact details, lead status, assigned intern and complete reach-out history." },
-      { property: "og:title", content: "Company details — InternLead CRM" },
+      { property: "og:title", content: "Company details — LeadPilot CRM" },
       { property: "og:description", content: "Everything recorded about one company and who reached out." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

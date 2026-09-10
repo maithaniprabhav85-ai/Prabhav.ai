@@ -13,9 +13,9 @@ import type { Lead } from "@/lib/crm/types";
 export const Route = createFileRoute("/follow-ups")({
   head: () => ({
     meta: [
-      { title: "Follow-ups — InternLead CRM" },
+      { title: "Follow-ups — LeadPilot CRM" },
       { name: "description", content: "Overdue, today and upcoming follow-ups with one-tap complete or reschedule." },
-      { property: "og:title", content: "Follow-ups — InternLead CRM" },
+      { property: "og:title", content: "Follow-ups — LeadPilot CRM" },
       { property: "og:description", content: "Never miss a lead touchpoint: overdue, today and upcoming queues." },
     ],
   }),

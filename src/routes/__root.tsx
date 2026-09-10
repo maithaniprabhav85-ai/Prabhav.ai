@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "InternLead CRM — Lead & Intern Performance" },
+      { title: "LeadPilot CRM — Lead & Intern Performance" },
       {
         name: "description",
         content:
           "Premium lead CRM for tracking leads, follow-ups and intern performance in one workspace.",
       },
-      { property: "og:title", content: "InternLead CRM" },
+      { property: "og:title", content: "LeadPilot CRM" },
       {
         property: "og:description",
         content: "Track leads, follow-ups and intern performance in one premium workspace.",

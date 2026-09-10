@@ -36,9 +36,9 @@ import { DEPARTMENTS, DESIGNATIONS, type Intern } from "@/lib/crm/types";
 export const Route = createFileRoute("/interns/")({
   head: () => ({
     meta: [
-      { title: "Intern Profiles — InternLead CRM" },
+      { title: "Intern Profiles — LeadPilot CRM" },
       { name: "description", content: "Browse every intern with department, designation, working hours, assigned leads and follow-up performance." },
-      { property: "og:title", content: "Intern Profiles — InternLead CRM" },
+      { property: "og:title", content: "Intern Profiles — LeadPilot CRM" },
       { property: "og:description", content: "Manage intern profiles: add, update or remove team members." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

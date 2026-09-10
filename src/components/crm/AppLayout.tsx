@@ -140,7 +140,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <NavList onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
-        <span className="text-sm font-semibold text-foreground">InternLead CRM</span>
+        <span className="text-sm font-semibold text-foreground">LeadPilot CRM</span>
       </header>
 
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>

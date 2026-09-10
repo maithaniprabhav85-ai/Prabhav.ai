@@ -34,7 +34,7 @@ export function downloadLeadPdf(lead: Lead, internLabel: string) {
   @media print{body{padding:0}}
 </style></head><body>
 <h1>${esc(lead.company)}</h1>
-<p class="sub">Lead details — InternLead CRM</p>
+<p class="sub">Lead details — LeadPilot CRM</p>
 <table>${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>
 <script>window.onload=function(){window.print()}<\/script>
 </body></html>`;

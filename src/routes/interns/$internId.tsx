@@ -10,9 +10,9 @@ import { useCrm } from "@/lib/crm/context";
 export const Route = createFileRoute("/interns/$internId")({
   head: () => ({
     meta: [
-      { title: "Intern profile — InternLead CRM" },
+      { title: "Intern profile — LeadPilot CRM" },
       { name: "description", content: "Intern profile with start date, working hours, assigned leads, follow-up rate and lead activity." },
-      { property: "og:title", content: "Intern profile — InternLead CRM" },
+      { property: "og:title", content: "Intern profile — LeadPilot CRM" },
       { property: "og:description", content: "Performance, hours and lead activity for a single intern." },
     ],
   }),

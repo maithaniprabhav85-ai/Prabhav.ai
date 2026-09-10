@@ -16,9 +16,9 @@ const ALL = "all";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin Panel — InternLead CRM" },
+      { title: "Admin Panel — LeadPilot CRM" },
       { name: "description", content: "Founder-only overview of intern workload, follow-up completion and conversion performance across the pipeline." },
-      { property: "og:title", content: "Admin Panel — InternLead CRM" },
+      { property: "og:title", content: "Admin Panel — LeadPilot CRM" },
       { property: "og:description", content: "Compare intern workload and conversions in one founder view." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
