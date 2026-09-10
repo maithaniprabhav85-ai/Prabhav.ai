@@ -215,26 +215,32 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       isFounder,
       currentIntern,
       signIn: (userId, password) => {
-        const id = userId.trim();
+        const id = userId.trim().toLowerCase();
         const pass = password.trim();
-        if (
-          id.toLowerCase() === data.settings.adminId.toLowerCase() &&
-          pass === data.settings.adminPassword
-        ) {
+        if (!isEmail(id)) return false;
+        if (id === data.settings.adminEmail.trim().toLowerCase() && pass === data.settings.adminPassword) {
           setData((d) => ({ ...d, session: { role: "Founder", internId: null }, settings: { ...d.settings, role: "Founder" } }));
           return true;
         }
-        const intern = data.interns.find(
-          (i) => i.code.toLowerCase() === id.toLowerCase() || i.email.toLowerCase() === id.toLowerCase(),
-        );
+        const intern = data.interns.find((i) => i.email.trim().toLowerCase() === id);
         if (intern && intern.password === pass) {
           const s: Session = { role: "Intern", internId: intern.id };
-          setData((d) => ({ ...d, session: s, settings: { ...d.settings, role: "Intern" } }));
+          setData((d) => ({
+            ...d,
+            session: s,
+            interns: d.interns.map((i) => ({ ...i, online: i.id === intern.id })),
+            settings: { ...d.settings, role: "Intern" },
+          }));
           return true;
         }
         return false;
       },
-      signOut: () => setData((d) => ({ ...d, session: null })),
+      signOut: () =>
+        setData((d) => ({
+          ...d,
+          session: null,
+          interns: d.interns.map((i) => (i.online ? { ...i, online: false } : i)),
+        })),
       changePassword: (current: string, next: string) => {
         const cur = current.trim();
         const nx = next.trim();
