@@ -8,6 +8,15 @@ export type { InternStats, CrmNotification } from "./context";
 
 const KEY = "intern-lead-crm-v1";
 
+/** Interns are labelled with a padded unique ID: 001, 002, 003 … */
+const toInternCode = (raw: string | undefined, fallback: number) => {
+  const digits = (raw ?? "").replace(/[^0-9]/g, "");
+  return String(Number(digits) || fallback).padStart(3, "0");
+};
+
+export const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+
+
 function load(): CrmData {
   if (typeof window === "undefined") return seedData;
   try {
