@@ -14,15 +14,19 @@ function load(): CrmData {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return seedData;
     const parsed = JSON.parse(raw) as Partial<CrmData>;
+    const savedSettings = { ...seedData.settings, ...parsed.settings };
+    if (savedSettings.companyName === "InternLead CRM") savedSettings.companyName = "LeadPilot CRM";
+    if (!savedSettings.adminEmail) savedSettings.adminEmail = seedData.settings.adminEmail;
     return {
       ...seedData,
       ...parsed,
       interns: (parsed.interns ?? seedData.interns).map((i, idx) => ({
         ...i,
-        code: i.code || `Intern ${idx + 1}`,
+        code: toInternCode(i.code, idx + 1),
         department: i.department || "Sales",
         designation: i.designation || "Sales Intern",
         password: i.password || `intern${idx + 1}`,
+        online: i.online ?? false,
       })),
       leads: parsed.leads ?? seedData.leads,
       activities: parsed.activities ?? seedData.activities,
@@ -30,7 +34,7 @@ function load(): CrmData {
       workSessions: parsed.workSessions ?? [],
       readNotificationIds: parsed.readNotificationIds ?? [],
       session: parsed.session ?? null,
-      settings: { ...seedData.settings, ...parsed.settings },
+      settings: savedSettings,
     };
   } catch {
     return seedData;
