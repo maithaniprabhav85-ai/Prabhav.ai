@@ -162,9 +162,12 @@ function Interns() {
                   {s.intern.code.replace(/[^0-9]/g, "")}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <Link to="/interns/$internId" params={{ internId: s.intern.id }} className="truncate font-semibold text-navy hover:text-primary">
-                    {s.intern.code}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link to="/interns/$internId" params={{ internId: s.intern.id }} className="truncate font-semibold text-navy hover:text-primary">
+                      {s.intern.code}
+                    </Link>
+                    <StatusDot online={!!s.intern.online} />
+                  </div>
                   <p className="truncate text-xs font-medium text-navy/70">{s.intern.name}</p>
                   <p className="truncate text-xs text-muted-foreground">{s.intern.email}</p>
                 </div>

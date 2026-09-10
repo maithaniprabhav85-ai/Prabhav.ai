@@ -126,6 +126,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-[radial-gradient(65%_50%_at_85%_0%,color-mix(in_oklab,var(--color-primary)_10%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-info)_8%,transparent),transparent)]" />
+        <div className="absolute inset-0 grid place-items-center">
+          <p className="select-none whitespace-nowrap text-[12vw] font-black uppercase leading-none tracking-[0.2em] text-navy/[0.035] sm:text-[9vw]">
+            Pixel Infinite AI
+          </p>
+        </div>
       </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
         <Brand />
