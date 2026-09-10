@@ -24,14 +24,18 @@ export function LoginScreen() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId.trim() || !password.trim()) {
-      setError("Enter both your ID and password.");
+      setError("Enter both your email and password.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(userId.trim())) {
+      setError("Enter a valid email address.");
       return;
     }
     if (signIn(userId, password)) {
       setError("");
       toast.success("Signed in");
     } else {
-      setError("Wrong ID or password.");
+      setError("Wrong email or password.");
     }
   };
 

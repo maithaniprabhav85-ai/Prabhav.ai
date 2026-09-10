@@ -45,3 +45,26 @@ export function downloadLeadPdf(lead: Lead, internLabel: string) {
   win.document.close();
   return true;
 }
+
+/** Downloads the given leads (already filtered) as a CSV file. */
+export function downloadLeadsCsv(leads: Lead[], internLabel: (id: string) => string) {
+  const headers = [
+    "Company", "Contact person", "Email", "Phone", "Industry", "Location",
+    "Status", "Priority", "Assigned intern", "Next follow-up", "Notes", "Created",
+  ];
+  const cell = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = leads.map((l) =>
+    [
+      l.company, l.contactPerson, l.email, l.phone, l.industry, l.location,
+      l.status, l.priority, internLabel(l.internId), l.nextFollowUp || "—", l.notes || "—",
+      formatDateTime(l.createdAt),
+    ].map(cell).join(","),
+  );
+  const csv = [headers.map(cell).join(","), ...rows].join("\r\n");
+  const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `leadpilot-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
