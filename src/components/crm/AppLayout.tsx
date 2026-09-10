@@ -75,9 +75,16 @@ function AccountChip() {
   return (
     <div className="mx-3 mt-4 rounded-xl bg-sidebar-accent/60 p-3">
       <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
-        {isFounder ? settings.adminId : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
+        {isFounder ? settings.adminEmail : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
       </p>
-      <p className="text-xs text-sidebar-foreground/60">{isFounder ? "Admin access" : "Intern access"}</p>
+      <p className="flex items-center gap-1.5 text-xs text-sidebar-foreground/60">
+        {isFounder ? "Admin access" : "Intern access"}
+        {currentIntern && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+            <span className="size-1.5 rounded-full bg-emerald-400" /> Active
+          </span>
+        )}
+      </p>
       {isFounder && (
         <ChangePasswordDialog
           trigger={
@@ -100,10 +107,11 @@ function Brand() {
   return (
     <div className="flex items-center gap-3 px-6 py-5">
       <div className="grid size-9 place-items-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
-        IL
+        LP
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">{settings.companyName}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/50">Pixel Infinite AI</p>
         <p className="text-xs text-sidebar-foreground/60">{settings.role} workspace</p>
       </div>
     </div>
