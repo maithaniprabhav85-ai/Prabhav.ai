@@ -35,6 +35,8 @@ export interface Intern {
   workingHours: number;
   /** Login password for this intern (demo-only, stored locally) */
   password: string;
+  /** True while this intern is signed in on this device */
+  online?: boolean;
 }
 
 export interface WorkSession {
@@ -93,6 +95,7 @@ export interface Settings {
   notifyOverdue: boolean;
   notifyUpcoming: boolean;
   adminId: string;
+  adminEmail: string;
   adminPassword: string;
 }
 

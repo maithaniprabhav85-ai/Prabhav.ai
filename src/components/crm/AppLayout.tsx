@@ -75,9 +75,16 @@ function AccountChip() {
   return (
     <div className="mx-3 mt-4 rounded-xl bg-sidebar-accent/60 p-3">
       <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
-        {isFounder ? settings.adminId : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
+        {isFounder ? settings.adminEmail : currentIntern ? `${currentIntern.code} — ${currentIntern.name}` : "Guest"}
       </p>
-      <p className="text-xs text-sidebar-foreground/60">{isFounder ? "Admin access" : "Intern access"}</p>
+      <p className="flex items-center gap-1.5 text-xs text-sidebar-foreground/60">
+        {isFounder ? "Admin access" : "Intern access"}
+        {currentIntern && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+            <span className="size-1.5 rounded-full bg-emerald-400" /> Active
+          </span>
+        )}
+      </p>
       {isFounder && (
         <ChangePasswordDialog
           trigger={
@@ -100,10 +107,11 @@ function Brand() {
   return (
     <div className="flex items-center gap-3 px-6 py-5">
       <div className="grid size-9 place-items-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
-        IL
+        LP
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">{settings.companyName}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/50">Pixel Infinite AI</p>
         <p className="text-xs text-sidebar-foreground/60">{settings.role} workspace</p>
       </div>
     </div>
@@ -118,6 +126,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-[radial-gradient(65%_50%_at_85%_0%,color-mix(in_oklab,var(--color-primary)_10%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-info)_8%,transparent),transparent)]" />
+        <div className="absolute inset-0 grid place-items-center">
+          <p className="select-none whitespace-nowrap text-[12vw] font-black uppercase leading-none tracking-[0.2em] text-navy/[0.035] sm:text-[9vw]">
+            Pixel Infinite AI
+          </p>
+        </div>
       </div>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sidebar lg:flex">
         <Brand />
@@ -140,7 +153,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <NavList onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
-        <span className="text-sm font-semibold text-foreground">InternLead CRM</span>
+        <span className="text-sm font-semibold text-foreground">LeadPilot CRM</span>
       </header>
 
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>

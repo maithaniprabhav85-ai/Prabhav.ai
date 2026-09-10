@@ -36,9 +36,9 @@ import { DEPARTMENTS, DESIGNATIONS, type Intern } from "@/lib/crm/types";
 export const Route = createFileRoute("/interns/")({
   head: () => ({
     meta: [
-      { title: "Intern Profiles — InternLead CRM" },
+      { title: "Intern Profiles — LeadPilot CRM" },
       { name: "description", content: "Browse every intern with department, designation, working hours, assigned leads and follow-up performance." },
-      { property: "og:title", content: "Intern Profiles — InternLead CRM" },
+      { property: "og:title", content: "Intern Profiles — LeadPilot CRM" },
       { property: "og:description", content: "Manage intern profiles: add, update or remove team members." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -162,9 +162,12 @@ function Interns() {
                   {s.intern.code.replace(/[^0-9]/g, "")}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <Link to="/interns/$internId" params={{ internId: s.intern.id }} className="truncate font-semibold text-navy hover:text-primary">
-                    {s.intern.code}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link to="/interns/$internId" params={{ internId: s.intern.id }} className="truncate font-semibold text-navy hover:text-primary">
+                      {s.intern.code}
+                    </Link>
+                    <StatusDot online={!!s.intern.online} />
+                  </div>
                   <p className="truncate text-xs font-medium text-navy/70">{s.intern.name}</p>
                   <p className="truncate text-xs text-muted-foreground">{s.intern.email}</p>
                 </div>

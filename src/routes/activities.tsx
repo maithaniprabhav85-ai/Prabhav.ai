@@ -9,9 +9,9 @@ import { useCrm } from "@/lib/crm/context";
 export const Route = createFileRoute("/activities")({
   head: () => ({
     meta: [
-      { title: "Activities — InternLead CRM" },
+      { title: "Activities — LeadPilot CRM" },
       { name: "description", content: "Chronological timeline of lead creations, updates, completed follow-ups and team changes." },
-      { property: "og:title", content: "Activities — InternLead CRM" },
+      { property: "og:title", content: "Activities — LeadPilot CRM" },
       { property: "og:description", content: "A single timeline of everything happening across the pipeline." },
     ],
   }),

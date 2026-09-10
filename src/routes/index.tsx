@@ -10,12 +10,12 @@ import { useCrm } from "@/lib/crm/context";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — InternLead CRM" },
+      { title: "Dashboard — LeadPilot CRM" },
       {
         name: "description",
         content: "Live snapshot of leads, contacted accounts, follow-up rate and conversions across your intern team.",
       },
-      { property: "og:title", content: "Dashboard — InternLead CRM" },
+      { property: "og:title", content: "Dashboard — LeadPilot CRM" },
       { property: "og:description", content: "Leads, follow-ups, conversions and intern performance at a glance." },
     ],
   }),
@@ -46,7 +46,7 @@ function Dashboard() {
         <div className="absolute inset-0 bg-[linear-gradient(100deg,var(--navy)_20%,color-mix(in_oklab,var(--navy)_70%,transparent))]" />
         <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 px-5 py-8 sm:px-8 sm:py-10">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-foreground/70">InternLead CRM</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-foreground/70">LeadPilot CRM</p>
             <h1 className="mt-1 text-2xl font-bold text-navy-foreground sm:text-3xl">Dashboard</h1>
             <p className="mt-1 text-sm text-navy-foreground/75">Team-wide pipeline health and intern performance</p>
           </div>

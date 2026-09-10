@@ -14,9 +14,9 @@ import { useCrm } from "@/lib/crm/context";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — InternLead CRM" },
+      { title: "Settings — LeadPilot CRM" },
       { name: "description", content: "Set your role, company name, default follow-up interval, table density and notification preferences." },
-      { property: "og:title", content: "Settings — InternLead CRM" },
+      { property: "og:title", content: "Settings — LeadPilot CRM" },
       { property: "og:description", content: "Tune roles, follow-up defaults and alerts for your CRM." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

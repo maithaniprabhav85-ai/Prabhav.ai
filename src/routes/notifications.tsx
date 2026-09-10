@@ -8,9 +8,9 @@ import { useCrm } from "@/lib/crm/context";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — InternLead CRM" },
+      { title: "Notifications — LeadPilot CRM" },
       { name: "description", content: "Overdue and upcoming follow-up alerts plus recent pipeline updates for your intern team." },
-      { property: "og:title", content: "Notifications — InternLead CRM" },
+      { property: "og:title", content: "Notifications — LeadPilot CRM" },
       { property: "og:description", content: "Never miss an overdue follow-up or a lead status change." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

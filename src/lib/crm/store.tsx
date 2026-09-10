@@ -8,21 +8,34 @@ export type { InternStats, CrmNotification } from "./context";
 
 const KEY = "intern-lead-crm-v1";
 
+/** Interns are labelled with a padded unique ID: 001, 002, 003 … */
+const toInternCode = (raw: string | undefined, fallback: number) => {
+  const digits = (raw ?? "").replace(/[^0-9]/g, "");
+  return String(Number(digits) || fallback).padStart(3, "0");
+};
+
+export const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+
+
 function load(): CrmData {
   if (typeof window === "undefined") return seedData;
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return seedData;
     const parsed = JSON.parse(raw) as Partial<CrmData>;
+    const savedSettings = { ...seedData.settings, ...parsed.settings };
+    if (savedSettings.companyName === "InternLead CRM") savedSettings.companyName = "LeadPilot CRM";
+    if (!savedSettings.adminEmail) savedSettings.adminEmail = seedData.settings.adminEmail;
     return {
       ...seedData,
       ...parsed,
       interns: (parsed.interns ?? seedData.interns).map((i, idx) => ({
         ...i,
-        code: i.code || `Intern ${idx + 1}`,
+        code: toInternCode(i.code, idx + 1),
         department: i.department || "Sales",
         designation: i.designation || "Sales Intern",
         password: i.password || `intern${idx + 1}`,
+        online: i.online ?? false,
       })),
       leads: parsed.leads ?? seedData.leads,
       activities: parsed.activities ?? seedData.activities,
@@ -30,7 +43,7 @@ function load(): CrmData {
       workSessions: parsed.workSessions ?? [],
       readNotificationIds: parsed.readNotificationIds ?? [],
       session: parsed.session ?? null,
-      settings: { ...seedData.settings, ...parsed.settings },
+      settings: savedSettings,
     };
   } catch {
     return seedData;
@@ -202,26 +215,32 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       isFounder,
       currentIntern,
       signIn: (userId, password) => {
-        const id = userId.trim();
+        const id = userId.trim().toLowerCase();
         const pass = password.trim();
-        if (
-          id.toLowerCase() === data.settings.adminId.toLowerCase() &&
-          pass === data.settings.adminPassword
-        ) {
+        if (!isEmail(id)) return false;
+        if (id === data.settings.adminEmail.trim().toLowerCase() && pass === data.settings.adminPassword) {
           setData((d) => ({ ...d, session: { role: "Founder", internId: null }, settings: { ...d.settings, role: "Founder" } }));
           return true;
         }
-        const intern = data.interns.find(
-          (i) => i.code.toLowerCase() === id.toLowerCase() || i.email.toLowerCase() === id.toLowerCase(),
-        );
+        const intern = data.interns.find((i) => i.email.trim().toLowerCase() === id);
         if (intern && intern.password === pass) {
           const s: Session = { role: "Intern", internId: intern.id };
-          setData((d) => ({ ...d, session: s, settings: { ...d.settings, role: "Intern" } }));
+          setData((d) => ({
+            ...d,
+            session: s,
+            interns: d.interns.map((i) => ({ ...i, online: i.id === intern.id })),
+            settings: { ...d.settings, role: "Intern" },
+          }));
           return true;
         }
         return false;
       },
-      signOut: () => setData((d) => ({ ...d, session: null })),
+      signOut: () =>
+        setData((d) => ({
+          ...d,
+          session: null,
+          interns: d.interns.map((i) => (i.online ? { ...i, online: false } : i)),
+        })),
       changePassword: (current: string, next: string) => {
         const cur = current.trim();
         const nx = next.trim();
@@ -286,6 +305,10 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       addIntern: (i) => {
         const email = i.email.trim().toLowerCase();
         const phone = i.phone.replace(/\s+/g, "");
+        if (!isEmail(email)) return { ok: false, error: "Enter a valid email address." };
+        if (email === data.settings.adminEmail.trim().toLowerCase()) {
+          return { ok: false, error: "This email or phone number is already in use. Please use a different email or phone number." };
+        }
         const clash = data.interns.some(
           (x) =>
             (email && x.email.trim().toLowerCase() === email) ||
@@ -297,7 +320,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         setData((d) => {
           const nextNum =
             d.interns.reduce((max, x) => Math.max(max, Number(x.code.replace(/[^0-9]/g, "")) || 0), 0) + 1;
-          const intern: Intern = { ...i, id: uid(), code: `Intern ${nextNum}` };
+          const intern: Intern = { ...i, id: uid(), code: String(nextNum).padStart(3, "0"), online: false };
           return logActivity({ ...d, interns: [...d.interns, intern] }, {
             internId: intern.id,
             type: "intern_added",

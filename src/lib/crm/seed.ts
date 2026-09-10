@@ -22,12 +22,13 @@ const designations = ["Sales Intern", "Marketing Intern", "Research Intern", "Op
 
 const interns = internNames.map((name, i) => ({
   id: `in-${i + 1}`,
-  code: `Intern ${i + 1}`,
+  code: String(i + 1).padStart(3, "0"),
   name,
   department: departments[i % departments.length]!,
   designation: designations[i % designations.length]!,
   password: `intern${i + 1}`,
-  email: `${name.split(" ")[0]!.toLowerCase()}@internlead.io`,
+  online: false,
+  email: `${name.split(" ")[0]!.toLowerCase()}@leadpilot.io`,
   phone: `+91 9${String(811000000 + i * 3210987).slice(0, 9)}`,
   startDate: dateOnly(-96 + i * 9),
   workingHours: 184 - i * 14,
@@ -97,12 +98,13 @@ export const seedData: CrmData = {
   session: null,
   settings: {
     role: "Founder",
-    companyName: "InternLead CRM",
+    companyName: "LeadPilot CRM",
     defaultFollowUpDays: 3,
     compactTable: false,
     notifyOverdue: true,
     notifyUpcoming: true,
     adminId: "admin",
+    adminEmail: "admin@pixelinfinite.ai",
     adminPassword: "admin123",
   },
 };

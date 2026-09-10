@@ -24,14 +24,18 @@ export function LoginScreen() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId.trim() || !password.trim()) {
-      setError("Enter both your ID and password.");
+      setError("Enter both your email and password.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(userId.trim())) {
+      setError("Enter a valid email address.");
       return;
     }
     if (signIn(userId, password)) {
       setError("");
       toast.success("Signed in");
     } else {
-      setError("Wrong ID or password.");
+      setError("Wrong email or password.");
     }
   };
 
@@ -83,14 +87,16 @@ export function LoginScreen() {
         <form onSubmit={submit} className="mt-6 grid gap-4">
           <div className="grid gap-1.5">
             <Label htmlFor="userId" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              User ID
+              Email address
             </Label>
             <Input
               id="userId"
-              maxLength={60}
+              type="email"
+              maxLength={80}
+              placeholder={mode === "admin" ? "admin@company.com" : "you@company.com"}
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              autoComplete="username"
+              autoComplete="email"
             />
           </div>
           <div className="grid gap-1.5">

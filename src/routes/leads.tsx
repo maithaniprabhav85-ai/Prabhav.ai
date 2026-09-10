@@ -28,9 +28,9 @@ import { INDUSTRIES, LEAD_PRIORITIES, LEAD_STATUSES } from "@/lib/crm/types";
 export const Route = createFileRoute("/leads")({
   head: () => ({
     meta: [
-      { title: "Leads — InternLead CRM" },
+      { title: "Leads — LeadPilot CRM" },
       { name: "description", content: "Searchable lead table with status, priority, industry and intern filters plus add, edit and delete." },
-      { property: "og:title", content: "Leads — InternLead CRM" },
+      { property: "og:title", content: "Leads — LeadPilot CRM" },
       { property: "og:description", content: "Manage every lead with rich filters and quick edits." },
     ],
   }),
