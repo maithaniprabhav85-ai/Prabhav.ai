@@ -305,6 +305,10 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       addIntern: (i) => {
         const email = i.email.trim().toLowerCase();
         const phone = i.phone.replace(/\s+/g, "");
+        if (!isEmail(email)) return { ok: false, error: "Enter a valid email address." };
+        if (email === data.settings.adminEmail.trim().toLowerCase()) {
+          return { ok: false, error: "This email or phone number is already in use. Please use a different email or phone number." };
+        }
         const clash = data.interns.some(
           (x) =>
             (email && x.email.trim().toLowerCase() === email) ||
@@ -316,7 +320,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         setData((d) => {
           const nextNum =
             d.interns.reduce((max, x) => Math.max(max, Number(x.code.replace(/[^0-9]/g, "")) || 0), 0) + 1;
-          const intern: Intern = { ...i, id: uid(), code: `Intern ${nextNum}` };
+          const intern: Intern = { ...i, id: uid(), code: String(nextNum).padStart(3, "0"), online: false };
           return logActivity({ ...d, interns: [...d.interns, intern] }, {
             internId: intern.id,
             type: "intern_added",
