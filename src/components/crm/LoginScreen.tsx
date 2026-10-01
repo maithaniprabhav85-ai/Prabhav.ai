@@ -1,7 +1,7 @@
 import { LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import crmHero from "@/assets/crm-hero.jpg.asset.json";
+import pixelLogoGlow from "@/assets/pixel-infinite-logo-glow.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,9 +41,13 @@ export function LoginScreen() {
 
   return (
     <div className="relative grid min-h-screen place-items-center px-4 py-10">
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <img src={crmHero.url} alt="" width={1920} height={720} className="size-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy/85 via-navy/70 to-primary/40" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-navy via-[#0d2540] to-primary/60">
+        <img
+          src={pixelLogoGlow}
+          alt=""
+          className="absolute left-1/2 top-1/2 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-90 [filter:drop-shadow(0_0_40px_rgba(59,130,246,0.9))_drop-shadow(0_0_120px_rgba(147,197,253,0.6))]"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(11,31,51,0.55)_100%)]" />
       </div>
 
       <div className="surface-card w-full max-w-md p-6 sm:p-8">
