@@ -245,6 +245,15 @@ function Interns() {
   );
 }
 
+function StatusDot({ online }: { online: boolean }) {
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-medium ${online ? "text-primary" : "text-muted-foreground"}`}>
+      <span className={`size-2 rounded-full ${online ? "bg-primary" : "bg-muted-foreground/50"}`} />
+      {online ? "Active" : "Offline"}
+    </span>
+  );
+}
+
 function Mini({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg bg-muted px-2 py-2">

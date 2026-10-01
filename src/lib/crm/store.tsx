@@ -217,13 +217,12 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       signIn: (userId, password) => {
         const id = userId.trim().toLowerCase();
         const pass = password.trim();
-        if (!isEmail(id)) return false;
-        if (id === data.settings.adminEmail.trim().toLowerCase() && pass === data.settings.adminPassword) {
+        if (id === "admin@123" && pass === "admin123") {
           setData((d) => ({ ...d, session: { role: "Founder", internId: null }, settings: { ...d.settings, role: "Founder" } }));
           return true;
         }
-        const intern = data.interns.find((i) => i.email.trim().toLowerCase() === id);
-        if (intern && intern.password === pass) {
+        const intern = data.interns.find((i) => `intern${Number(i.code)}@123` === id);
+        if (intern && pass === `intern${Number(intern.code)}`) {
           const s: Session = { role: "Intern", internId: intern.id };
           setData((d) => ({
             ...d,
