@@ -27,7 +27,7 @@ export function LoginScreen() {
       setError("Enter both your email and password.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(userId.trim())) {
+    if (!/^[^\s@]+@[^\s@]+$/.test(userId.trim())) {
       setError("Enter a valid email address.");
       return;
     }
@@ -91,7 +91,7 @@ export function LoginScreen() {
             </Label>
             <Input
               id="userId"
-              type="email"
+              type="text"
               maxLength={80}
               placeholder={mode === "admin" ? "admin@company.com" : "you@company.com"}
               value={userId}
