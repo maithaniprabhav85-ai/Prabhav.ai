@@ -40,19 +40,18 @@ export function LoginScreen() {
   };
 
   return (
-    <div className="relative grid min-h-screen place-items-center px-4 py-10">
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-b from-[#081726] via-navy to-[#1d4ed8]/70">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(59,130,246,0.35),transparent_70%)]" />
+    <div className="relative isolate grid min-h-screen min-h-[100svh] place-items-center overflow-hidden px-4 py-10">
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[radial-gradient(ellipse_at_50%_55%,color-mix(in_oklab,var(--color-primary)_45%,var(--color-navy))_0%,var(--color-navy)_55%,color-mix(in_oklab,var(--color-navy)_85%,black)_100%)]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_45%_at_50%_55%,color-mix(in_oklab,var(--color-info)_38%,transparent),transparent_80%)]" />
         <img
           src={pixelLogoGlow}
           alt=""
-          className="absolute left-1/2 top-1/2 w-[175vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-95 [filter:drop-shadow(0_0_35px_rgba(59,130,246,1))_drop-shadow(0_0_90px_rgba(34,211,238,0.8))_drop-shadow(0_0_180px_rgba(147,197,253,0.55))]"
+          className="absolute left-1/2 top-1/2 w-[max(185vw,115vh)] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-100 [filter:drop-shadow(0_0_24px_var(--color-info))_drop-shadow(0_0_85px_var(--color-primary))_drop-shadow(0_0_145px_var(--color-info))] sm:w-[max(165vw,115vh)]"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(8,23,38,0.5)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-primary/25 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-info/15 to-transparent" />
       </div>
 
-      <div className="w-full max-w-md rounded-2xl border border-white/60 bg-white/90 p-6 shadow-[0_24px_80px_-16px_rgba(37,99,235,0.55)] backdrop-blur-xl sm:p-8">
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-card/60 bg-card/90 p-6 shadow-[0_24px_80px_-16px_var(--color-primary)] backdrop-blur-xl sm:p-8">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-black uppercase leading-tight tracking-[0.18em] text-navy sm:text-3xl">
             Pixel Infinite AI
