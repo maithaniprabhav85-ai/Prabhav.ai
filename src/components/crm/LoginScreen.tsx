@@ -1,7 +1,7 @@
 import { LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import pixelLogoGlow from "@/assets/pixel-infinite-logo-glow.png";
+import pixelLoginBackground from "@/assets/pixel-login-reference-bg.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,14 +41,8 @@ export function LoginScreen() {
 
   return (
     <div className="relative isolate grid min-h-screen min-h-[100svh] place-items-center overflow-hidden px-4 py-10">
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[radial-gradient(ellipse_at_50%_55%,color-mix(in_oklab,var(--color-primary)_45%,var(--color-navy))_0%,var(--color-navy)_55%,color-mix(in_oklab,var(--color-navy)_85%,black)_100%)]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_45%_at_50%_55%,color-mix(in_oklab,var(--color-info)_38%,transparent),transparent_80%)]" />
-        <img
-          src={pixelLogoGlow}
-          alt=""
-          className="absolute left-1/2 top-1/2 w-[max(185vw,115vh)] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-100 [filter:drop-shadow(0_0_24px_var(--color-info))_drop-shadow(0_0_85px_var(--color-primary))_drop-shadow(0_0_145px_var(--color-info))] sm:w-[max(165vw,115vh)]"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-info/15 to-transparent" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-navy">
+        <img src={pixelLoginBackground} alt="" className="absolute inset-0 h-full w-full object-cover object-center max-sm:object-contain" />
       </div>
 
       <div className="relative z-10 w-full max-w-md rounded-2xl border border-card/60 bg-card/90 p-6 shadow-[0_24px_80px_-16px_var(--color-primary)] backdrop-blur-xl sm:p-8">
