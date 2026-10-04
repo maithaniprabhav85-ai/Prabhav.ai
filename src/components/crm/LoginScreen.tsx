@@ -1,7 +1,7 @@
 import { LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import pixelLoginBackground from "@/assets/pixel-login-reference-bg.jpg";
+import pixelLoginBackground from "@/assets/pixel-login-bg.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,7 +42,7 @@ export function LoginScreen() {
   return (
     <div className="relative isolate grid min-h-screen min-h-[100svh] place-items-center overflow-hidden px-4 py-10">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-navy">
-        <img src={pixelLoginBackground} alt="" className="absolute left-1/2 top-0 h-auto w-full max-w-none -translate-x-1/2 sm:top-1/2 sm:-translate-y-1/2" />
+        <img src={pixelLoginBackground.url} alt="" className="absolute inset-0 h-full w-full object-cover" />
       </div>
 
       <div className="relative z-10 w-full max-w-md rounded-2xl border border-card/60 bg-card/90 p-6 shadow-[0_24px_80px_-16px_var(--color-primary)] backdrop-blur-xl sm:p-8">
