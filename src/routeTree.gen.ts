@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as FollowUpsRouteImport } from './routes/follow-ups'
 import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -33,6 +34,11 @@ const ActivitiesRoute = ActivitiesRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FollowUpsRoute = FollowUpsRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/calendar': typeof CalendarRoute
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/calendar': typeof CalendarRoute
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/calendar': typeof CalendarRoute
   '/follow-ups': typeof FollowUpsRoute
   '/leads': typeof LeadsRoute
   '/notifications': typeof NotificationsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activities'
     | '/admin'
+    | '/calendar'
     | '/follow-ups'
     | '/leads'
     | '/notifications'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activities'
     | '/admin'
+    | '/calendar'
     | '/follow-ups'
     | '/leads'
     | '/notifications'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activities'
     | '/admin'
+    | '/calendar'
     | '/follow-ups'
     | '/leads'
     | '/notifications'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivitiesRoute: typeof ActivitiesRoute
   AdminRoute: typeof AdminRoute
+  CalendarRoute: typeof CalendarRoute
   FollowUpsRoute: typeof FollowUpsRoute
   LeadsRoute: typeof LeadsRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/follow-ups': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
   AdminRoute: AdminRoute,
+  CalendarRoute: CalendarRoute,
   FollowUpsRoute: FollowUpsRoute,
   LeadsRoute: LeadsRoute,
   NotificationsRoute: NotificationsRoute,
