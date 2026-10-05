@@ -1,9 +1,9 @@
 # Roadmap
 
-- [ ] Login page: remove top-left logo and enlarge feature list only
-- [ ] Full-screen signed-in layout and specified premium light-surface polish
-- [ ] Follow-up calendar, overdue badges, Dashboard/sidebar overdue totals
-- [ ] Lead WhatsApp, Call, and Email actions with activity logging
-- [ ] Filtered CSV export and mapped CSV import with duplicate choices
-- [ ] Admin leaderboard targets and intern Dashboard progress card
+- [x] Login page: remove top-left logo and enlarge feature list only
+- [x] Full-screen signed-in layout and specified premium light-surface polish
+- [x] Follow-up calendar, overdue badges, Dashboard/sidebar overdue totals
+- [x] Lead WhatsApp, Call, and Email actions with activity logging
+- [x] Filtered CSV export and mapped CSV import with duplicate choices
+- [x] Admin leaderboard targets and intern Dashboard progress card
 - [ ] Responsive and functional verification

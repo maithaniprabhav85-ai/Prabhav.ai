@@ -36,6 +36,7 @@ const empty = (internId: string, days: number): Draft => ({
 export function LeadDialog({ lead, trigger }: { lead?: Lead; trigger: ReactNode }) {
   const { interns, addLead, updateLead, settings } = useCrm();
   const [open, setOpen] = useState(false);
+  const [duplicate, setDuplicate] = useState<Lead | null>(null);
   const [draft, setDraft] = useState<Draft>(() => lead ?? empty(interns[0]?.id ?? "", settings.defaultFollowUpDays));
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function LeadDialog({ lead, trigger }: { lead?: Lead; trigger: ReactNode 
 
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setDraft((d) => ({ ...d, [k]: v }));
 
-  const submit = () => {
+  const submit = (allowDuplicate = false) => {
     if (!draft.company.trim() || !draft.contactPerson.trim()) {
       toast.error("Company and contact person are required");
       return;
@@ -53,9 +54,14 @@ export function LeadDialog({ lead, trigger }: { lead?: Lead; trigger: ReactNode 
       updateLead(lead.id, draft);
       toast.success("Lead updated");
     } else {
-      addLead(draft);
+      const result = addLead(draft, allowDuplicate);
+      if (!result.ok && result.duplicate) {
+        setDuplicate(result.duplicate);
+        return;
+      }
       toast.success("Lead added");
     }
+    setDuplicate(null);
     setOpen(false);
   };
 
@@ -126,9 +132,20 @@ export function LeadDialog({ lead, trigger }: { lead?: Lead; trigger: ReactNode 
           </div>
         </div>
 
+        {duplicate && (
+          <div className="rounded-xl border border-warning/40 bg-warning/10 p-4 text-sm">
+            <p className="font-semibold text-navy">Possible duplicate: {duplicate.company}</p>
+            <p className="mt-1 text-muted-foreground">A lead already matches this company, email, or phone number.</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => { setDuplicate(null); setOpen(false); }}>Skip</Button>
+              <Button size="sm" onClick={() => submit(true)}>Import anyway</Button>
+            </div>
+          </div>
+        )}
+
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={submit}>{lead ? "Save changes" : "Add lead"}</Button>
+          <Button onClick={() => submit()}>{lead ? "Save changes" : "Add lead"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

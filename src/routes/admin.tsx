@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/context";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LeaderboardTargets } from "@/components/crm/LeaderboardTargets";
 import { LEAD_PRIORITIES, LEAD_STATUSES } from "@/lib/crm/types";
 import { QUICK_RANGES, quickRange } from "@/lib/crm/quickRange";
 
@@ -201,7 +203,13 @@ function Admin() {
         <StatCard label="Conversions" value={converted} hint={`${visibleLeads.length ? Math.round((converted / visibleLeads.length) * 100) : 0}% win rate`} />
       </div>
 
-      <section className="surface-card mt-6 overflow-hidden">
+      <Tabs defaultValue="overview" className="mt-6">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview">
+      <section className="surface-card mt-4 overflow-hidden">
         <div className="border-b px-5 py-4">
           <h2 className="text-sm font-semibold text-navy">Intern leaderboard</h2>
         </div>
@@ -258,6 +266,9 @@ function Admin() {
           </div>
         )}
       </section>
+        </TabsContent>
+        <TabsContent value="leaderboard"><LeaderboardTargets /></TabsContent>
+      </Tabs>
     </>
   );
 }
