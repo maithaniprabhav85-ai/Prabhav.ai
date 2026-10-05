@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
+import { FollowUpCalendar } from "@/components/crm/FollowUpCalendar";
 import { EmptyState, PriorityPill, StatusPill } from "@/components/crm/bits";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -39,10 +41,12 @@ function FollowUps() {
           <TabsTrigger value="overdue">Overdue ({overdue.length})</TabsTrigger>
           <TabsTrigger value="today">Today ({now.length})</TabsTrigger>
           <TabsTrigger value="upcoming">Upcoming ({upcoming.length})</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
         </TabsList>
         <TabsContent value="overdue"><List leads={overdue} empty="Nothing overdue — great work." /></TabsContent>
         <TabsContent value="today"><List leads={now} empty="No follow-ups scheduled for today." /></TabsContent>
         <TabsContent value="upcoming"><List leads={upcoming} empty="No upcoming follow-ups." /></TabsContent>
+        <TabsContent value="calendar"><FollowUpCalendar leads={due} /></TabsContent>
       </Tabs>
     </>
   );
@@ -51,6 +55,7 @@ function FollowUps() {
 function List({ leads, empty }: { leads: Lead[]; empty: string }) {
   const { interns, completeFollowUp, rescheduleFollowUp } = useCrm();
   if (leads.length === 0) return <div className="mt-4"><EmptyState title={empty} /></div>;
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className="mt-4 grid gap-3">
@@ -61,6 +66,7 @@ function List({ leads, empty }: { leads: Lead[]; empty: string }) {
               <p className="font-semibold text-navy">{l.company}</p>
               <StatusPill status={l.status} />
               <PriorityPill priority={l.priority} />
+              {l.nextFollowUp < today && <Badge variant="destructive">Overdue</Badge>}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
               {l.contactPerson} · {interns.find((i) => i.id === l.internId)?.code ?? "Unassigned"} · due {l.nextFollowUp}

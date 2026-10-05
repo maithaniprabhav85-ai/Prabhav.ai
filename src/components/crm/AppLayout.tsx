@@ -4,9 +4,9 @@ import {
   Activity as ActivityIcon,
   Bell,
   CalendarClock,
+  Calendar as CalendarIcon,
   KeyRound,
   LayoutDashboard,
-
   LogOut,
   Menu,
   ShieldCheck,
@@ -17,7 +17,6 @@ import { useState, type ReactNode } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ChangePasswordDialog } from "@/components/crm/ChangePasswordDialog";
-
 import { useCrm } from "@/lib/crm/context";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +25,7 @@ type NavItem = { to: NonNullable<LinkProps["to"]>; label: string; icon: LucideIc
 const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/leads", label: "Leads", icon: Users },
+  { to: "/calendar", label: "Calendar", icon: CalendarIcon },
   { to: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
   { to: "/activities", label: "Activities", icon: ActivityIcon },
   { to: "/notifications", label: "Notifications", icon: Bell },
@@ -33,7 +33,10 @@ const NAV: NavItem[] = [
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useRouterState({ select: (s) => s.location });
-  const { settings, unreadCount, isFounder } = useCrm();
+  const { leads, unreadCount, isFounder } = useCrm();
+  const today = new Date().toISOString().slice(0, 10);
+  const overdueCount = leads.filter(l => l.nextFollowUp && l.nextFollowUp < today).length;
+
   const items: NavItem[] = [...NAV];
   if (isFounder) {
     items.push({ to: "/interns", label: "Intern Profiles", icon: UsersRound });
@@ -58,6 +61,11 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
           >
             <item.icon className="size-4 shrink-0 transition-colors duration-150 group-hover:text-[#2563EB]" />
             <span className="flex-1 truncate">{item.label}</span>
+            {item.to === "/follow-ups" && overdueCount > 0 && (
+              <span className="rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
+                {overdueCount}
+              </span>
+            )}
             {item.to === "/notifications" && unreadCount > 0 && (
               <span className="rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
                 {unreadCount}

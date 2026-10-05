@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Extend CRM features through focused components backed by the existing context and localStorage data model, so established pages and behavior remain stable.

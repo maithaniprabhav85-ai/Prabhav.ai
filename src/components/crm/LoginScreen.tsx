@@ -79,11 +79,7 @@ export function LoginScreen() {
       {/* Left branding */}
       <aside className="relative z-10 hidden w-[44%] flex-col justify-between px-12 py-14 lg:flex xl:px-20">
         <div>
-          <img
-            src={pixelLogoGlow}
-            alt="Pixel Infinite AI"
-            className="w-64 [filter:drop-shadow(0_0_28px_rgba(212,175,55,0.35))]"
-          />
+          <div className="h-20" aria-hidden />
           <p className="mt-10 text-3xl font-semibold leading-snug text-slate-100 xl:text-4xl">
             Connect. <span style={{ color: GOLD }}>Automate.</span> Grow.
           </p>
@@ -91,15 +87,15 @@ export function LoginScreen() {
             The lead CRM tool built for focused teams — every lead, follow-up and intern in one calm workspace.
           </p>
         </div>
-        <ul className="grid gap-5">
+        <ul className="grid gap-7">
           {features.map(({ icon: Icon, label, hint }) => (
-            <li key={label} className="flex items-center gap-4">
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
-                <Icon className="size-5" style={{ color: GOLD }} />
+            <li key={label} className="flex items-center gap-5">
+              <span className="grid size-14 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                <Icon className="size-7" style={{ color: GOLD }} />
               </span>
               <span>
-                <span className="block text-sm font-semibold text-slate-100">{label}</span>
-                <span className="block text-xs text-slate-400">{hint}</span>
+                <span className="block text-lg font-semibold text-slate-100 xl:text-xl">{label}</span>
+                <span className="block text-base text-slate-400">{hint}</span>
               </span>
             </li>
           ))}

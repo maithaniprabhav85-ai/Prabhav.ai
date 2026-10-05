@@ -32,6 +32,7 @@ const interns = internNames.map((name, i) => ({
   phone: `+91 9${String(811000000 + i * 3210987).slice(0, 9)}`,
   startDate: dateOnly(-96 + i * 9),
   workingHours: 184 - i * 14,
+  targetLeads: 25,
 }));
 
 const raw: Array<[string, string, string, string, string, LeadStatus, LeadPriority, string, number, number]> = [
@@ -106,5 +107,6 @@ export const seedData: CrmData = {
     adminId: "admin",
     adminEmail: "admin@pixelinfinite.ai",
     adminPassword: "admin123",
+    defaultTargetLeads: 20,
   },
 };

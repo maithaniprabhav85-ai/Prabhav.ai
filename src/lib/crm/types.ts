@@ -75,7 +75,10 @@ export interface Activity {
     | "followup_rescheduled"
     | "intern_added"
     | "intern_updated"
-    | "intern_deleted";
+    | "intern_deleted"
+    | "whatsapp_clicked"
+    | "call_clicked"
+    | "email_clicked";
   message: string;
   createdAt: string;
 }
@@ -85,6 +88,7 @@ export interface FollowUpLog {
   leadId: string;
   internId: string;
   completedAt: string;
+  scheduledFor?: string;
 }
 
 export interface Settings {
@@ -107,6 +111,7 @@ export interface CrmData {
   activities: Activity[];
   followUps: FollowUpLog[];
   workSessions: WorkSession[];
+  monthlyTargets: Record<string, number>;
   settings: Settings;
   readNotificationIds: string[];
   session: Session | null;

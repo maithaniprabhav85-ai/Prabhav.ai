@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatusPill } from "@/components/crm/bits";
 import { Button } from "@/components/ui/button";
+import { LeadQuickActions } from "@/components/crm/LeadQuickActions";
 import { useCrm } from "@/lib/crm/context";
 import { formatDateTime } from "@/lib/format";
 
@@ -62,6 +63,7 @@ function CompanyDetails() {
         subtitle={`${lead.industry} · ${lead.location}`}
         action={
           <div className="flex flex-wrap items-center gap-2">
+            <LeadQuickActions lead={lead} />
             <StatusPill status={lead.status} />
             <PriorityPill priority={lead.priority} />
           </div>

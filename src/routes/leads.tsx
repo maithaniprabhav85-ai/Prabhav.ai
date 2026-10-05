@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/crm/AppLayout";
 import { EmptyState, PriorityPill, StatusPill } from "@/components/crm/bits";
 import { LeadDialog } from "@/components/crm/LeadDialog";
+import { LeadCsvTools } from "@/components/crm/LeadCsvTools";
+import { LeadQuickActions } from "@/components/crm/LeadQuickActions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -112,6 +114,7 @@ function Leads() {
         subtitle={`${filtered.length} of ${leads.length} ${view === "archived" ? "archived leads" : "leads"}`}
         action={
           <div className="flex flex-wrap items-center gap-2">
+            <LeadCsvTools leads={filtered} />
             <div className="flex rounded-lg bg-muted p-1">
               <Button size="sm" variant={view === "active" ? "default" : "ghost"} onClick={() => setView("active")}>
                 Active
@@ -207,7 +210,7 @@ function Leads() {
           <table className="w-full min-w-[1000px] text-sm">
             <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                {["Company", "Contact", "Industry", "Status", "Priority", "Intern", "Next follow-up", "Created", ""].map((h) => (
+                {["Company", "Contact", "Industry", "Status", "Priority", "Intern", "Next follow-up", "Created", "Contact", ""].map((h) => (
                   <th key={h} className={`${cell} font-semibold`}>{h}</th>
                 ))}
               </tr>
@@ -236,6 +239,7 @@ function Leads() {
                   <td className={cell}>{internName(l.internId)}</td>
                   <td className={cell}>{l.nextFollowUp || "—"}</td>
                   <td className={`${cell} text-xs text-muted-foreground`}>{formatDateTime(l.createdAt)}</td>
+                  <td className={cell}><LeadQuickActions lead={l} /></td>
                   <td className={cell}>
                     <div className="flex justify-end gap-1">
                       <Button

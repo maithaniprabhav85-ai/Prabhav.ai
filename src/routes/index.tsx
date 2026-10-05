@@ -3,6 +3,7 @@ import crmHero from "@/assets/crm-hero.jpg.asset.json";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarClock, CheckCircle2, Percent, TrendingUp, Users } from "lucide-react";
 import { EmptyState, PriorityPill, StatCard, StatusPill } from "@/components/crm/bits";
+import { InternTargetCard } from "@/components/crm/InternTargetCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useCrm } from "@/lib/crm/context";
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { leads, activities, allStats, followUps } = useCrm();
+  const { leads, activities, allStats, followUps, isFounder, currentIntern, internStats } = useCrm();
   const today = new Date().toISOString().slice(0, 10);
 
   const contacted = leads.filter((l) => l.status !== "New").length;
@@ -32,6 +33,7 @@ function Dashboard() {
   const overdue = leads.filter((l) => l.nextFollowUp && l.nextFollowUp < today).length;
   const target = leads.length * 2 || 1;
   const followUpRate = Math.min(100, Math.round((followUps.length / target) * 100));
+  const currentStats = currentIntern ? internStats(currentIntern.id) : undefined;
 
   return (
     <>
@@ -64,6 +66,8 @@ function Dashboard() {
         <StatCard label="Converted" value={converted} icon={TrendingUp} hint={`${leads.length ? Math.round((converted / leads.length) * 100) : 0}% win rate`} />
         <StatCard label="Follow-up %" value={`${followUpRate}%`} icon={Percent} progress={followUpRate} />
       </div>
+
+      {!isFounder && currentStats && <InternTargetCard stats={currentStats} />}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
         <section className="surface-card lg:col-span-3">
