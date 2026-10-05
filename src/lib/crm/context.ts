@@ -11,6 +11,8 @@ export interface InternStats {
   hours: number;
   todayHours: number;
   totalHours: number;
+  onTimeFollowUps: number;
+  monthlyTarget: number;
 }
 
 export interface InternInsights {
@@ -42,7 +44,9 @@ export interface Ctx {
   changePassword: (current: string, next: string) => { ok: boolean; error?: string };
   setInternPassword: (internId: string, next: string) => { ok: boolean; error?: string };
 
-  addLead: (l: Omit<Lead, "id" | "createdAt">) => void;
+  addLead: (l: Omit<Lead, "id" | "createdAt">, allowDuplicate?: boolean) => { ok: boolean; duplicate?: Lead };
+  findDuplicateLead: (l: Pick<Lead, "company" | "email" | "phone">) => Lead | undefined;
+  logLeadContact: (leadId: string, channel: "whatsapp" | "call" | "email") => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
   archiveLead: (id: string, archived: boolean) => void;
@@ -61,6 +65,7 @@ export interface Ctx {
   resetDemoData: () => void;
   internStats: (id: string) => InternStats | undefined;
   allStats: InternStats[];
+  setMonthlyTarget: (internId: string, target: number) => void;
   notifications: CrmNotification[];
   unreadCount: number;
   markAllRead: () => void;

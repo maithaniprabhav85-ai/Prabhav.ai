@@ -94,6 +94,7 @@ export const seedData: CrmData = {
   activities,
   followUps,
   workSessions: [],
+  monthlyTargets: {},
   readNotificationIds: [],
   session: null,
   settings: {
