@@ -422,45 +422,6 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             message: `${lead.company} follow-up moved to ${date}`,
           });
         }),
-      logQuickAction: (leadId, type, message) =>
-        setData((d) => {
-          const lead = d.leads.find((l) => l.id === leadId);
-          if (!lead) return d;
-          return logActivity(d, {
-            leadId,
-            internId: lead.internId,
-            type,
-            message: `${internName(lead.internId)}: ${message}`,
-          });
-        }),
-      importLeads: (newLeads) => {
-        let imported = 0;
-        let duplicates = 0;
-        setData((d) => {
-          const leads = [...d.leads];
-          let currentData = d;
-          for (const nl of newLeads) {
-            const isDuplicate = leads.some(
-              (l) => l.company.toLowerCase() === nl.company.toLowerCase() && l.email.toLowerCase() === nl.email.toLowerCase()
-            );
-            if (isDuplicate) {
-              duplicates++;
-            } else {
-              const lead: Lead = { ...nl, id: uid(), createdAt: new Date().toISOString() };
-              leads.unshift(lead);
-              currentData = logActivity({ ...currentData, leads }, {
-                leadId: lead.id,
-                internId: lead.internId,
-                type: "lead_created",
-                message: `Imported lead ${lead.company}`,
-              });
-              imported++;
-            }
-          }
-          return { ...currentData, leads };
-        });
-        return { imported, duplicates };
-      },
       updateSettings: (patch) => setData((d) => ({ ...d, settings: { ...d.settings, ...patch } })),
       resetDemoData: () => setData({ ...seedData, session: data.session }),
     };
