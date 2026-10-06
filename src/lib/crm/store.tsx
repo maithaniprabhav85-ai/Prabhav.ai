@@ -100,6 +100,9 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       const loggedTotal = hoursOf(rows);
       const loggedToday = hoursOf(rows.filter((w) => w.start.slice(0, 10) === t));
       const totalHours = Math.round((intern.workingHours + loggedTotal) * 10) / 10;
+      const onTimeFollowUps = data.followUps.filter(
+        (f) => f.internId === intern.id && (!f.scheduledFor || f.completedAt.slice(0, 10) <= f.scheduledFor),
+      ).length;
       return {
         intern,
         assigned: assignedLeads.length,
@@ -110,6 +113,8 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         hours: totalHours,
         totalHours,
         todayHours: Math.round(loggedToday * 10) / 10,
+        onTimeFollowUps,
+        monthlyTarget: target,
       };
     };
 
@@ -265,11 +270,35 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       },
 
       allStats,
+      setMonthlyTarget: (internId, target) =>
+        setData((d) => ({
+          ...d,
+          interns: d.interns.map((intern) => intern.id === internId ? { ...intern, targetLeads: Math.max(1, Math.round(target)) } : intern),
+        })),
       notifications,
       unreadCount: notifications.filter((n) => !data.readNotificationIds.includes(n.id)).length,
       markAllRead: () => setData((d) => ({ ...d, readNotificationIds: notifications.map((n) => n.id) })),
       internStats: (id) => allStats.find((s) => s.intern.id === id),
-      addLead: (l) =>
+      findDuplicateLead: (candidate) => {
+        const email = candidate.email.trim().toLowerCase();
+        const phone = candidate.phone.replace(/\D/g, "");
+        const company = candidate.company.trim().toLowerCase();
+        return data.leads.find((lead) =>
+          (email && lead.email.trim().toLowerCase() === email) ||
+          (phone && lead.phone.replace(/\D/g, "") === phone) ||
+          (company && lead.company.trim().toLowerCase() === company),
+        );
+      },
+      addLead: (l, allowDuplicate = false) => {
+        const email = l.email.trim().toLowerCase();
+        const phone = l.phone.replace(/\D/g, "");
+        const company = l.company.trim().toLowerCase();
+        const duplicate = data.leads.find((lead) =>
+          (email && lead.email.trim().toLowerCase() === email) ||
+          (phone && lead.phone.replace(/\D/g, "") === phone) ||
+          (company && lead.company.trim().toLowerCase() === company),
+        );
+        if (duplicate && !allowDuplicate) return { ok: false, duplicate };
         setData((d) => {
           const lead: Lead = { ...l, id: uid(), createdAt: new Date().toISOString() };
           return logActivity({ ...d, leads: [lead, ...d.leads] }, {
@@ -277,6 +306,19 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             internId: lead.internId,
             type: "lead_created",
             message: `${internName(lead.internId)} added lead ${lead.company}`,
+          });
+        });
+        return { ok: true };
+      },
+      logLeadContact: (leadId, channel) =>
+        setData((d) => {
+          const lead = d.leads.find((item) => item.id === leadId);
+          if (!lead) return d;
+          return logActivity(d, {
+            leadId,
+            internId: lead.internId,
+            type: `${channel}_clicked` as Activity["type"],
+            message: `${currentIntern?.code ?? "Admin"} opened ${channel === "whatsapp" ? "WhatsApp" : channel} for ${lead.company}`,
           });
         }),
       updateLead: (id, patch) =>
@@ -359,7 +401,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             {
               ...d,
               leads,
-              followUps: [{ id: uid(), leadId, internId: lead.internId, completedAt: new Date().toISOString() }, ...d.followUps],
+              followUps: [{ id: uid(), leadId, internId: lead.internId, completedAt: new Date().toISOString(), scheduledFor: lead.nextFollowUp }, ...d.followUps],
             },
             {
               leadId,
@@ -380,45 +422,6 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             message: `${lead.company} follow-up moved to ${date}`,
           });
         }),
-      logQuickAction: (leadId, type, message) =>
-        setData((d) => {
-          const lead = d.leads.find((l) => l.id === leadId);
-          if (!lead) return d;
-          return logActivity(d, {
-            leadId,
-            internId: lead.internId,
-            type,
-            message: `${internName(lead.internId)}: ${message}`,
-          });
-        }),
-      importLeads: (newLeads) => {
-        let imported = 0;
-        let duplicates = 0;
-        setData((d) => {
-          const leads = [...d.leads];
-          let currentData = d;
-          for (const nl of newLeads) {
-            const isDuplicate = leads.some(
-              (l) => l.company.toLowerCase() === nl.company.toLowerCase() && l.email.toLowerCase() === nl.email.toLowerCase()
-            );
-            if (isDuplicate) {
-              duplicates++;
-            } else {
-              const lead: Lead = { ...nl, id: uid(), createdAt: new Date().toISOString() };
-              leads.unshift(lead);
-              currentData = logActivity({ ...currentData, leads }, {
-                leadId: lead.id,
-                internId: lead.internId,
-                type: "lead_created",
-                message: `Imported lead ${lead.company}`,
-              });
-              imported++;
-            }
-          }
-          return { ...currentData, leads };
-        });
-        return { imported, duplicates };
-      },
       updateSettings: (patch) => setData((d) => ({ ...d, settings: { ...d.settings, ...patch } })),
       resetDemoData: () => setData({ ...seedData, session: data.session }),
     };

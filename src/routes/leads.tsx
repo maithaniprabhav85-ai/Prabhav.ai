@@ -210,8 +210,8 @@ function Leads() {
           <table className="w-full min-w-[1000px] text-sm">
             <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                {["Company", "Contact", "Industry", "Status", "Priority", "Intern", "Next follow-up", "Created", "Contact", ""].map((h) => (
-                  <th key={h} className={`${cell} font-semibold`}>{h}</th>
+                {["Company", "Contact", "Industry", "Status", "Priority", "Intern", "Next follow-up", "Created", "Contact actions", ""].map((h, index) => (
+                  <th key={`${h}-${index}`} className={`${cell} font-semibold`}>{h}</th>
                 ))}
               </tr>
             </thead>

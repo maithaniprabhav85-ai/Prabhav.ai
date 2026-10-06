@@ -37,6 +37,7 @@ export interface Intern {
   password: string;
   /** True while this intern is signed in on this device */
   online?: boolean;
+  targetLeads?: number;
 }
 
 export interface WorkSession {
@@ -101,6 +102,7 @@ export interface Settings {
   adminId: string;
   adminEmail: string;
   adminPassword: string;
+  defaultTargetLeads: number;
 }
 
 export type Session = { role: "Founder"; internId: null } | { role: "Intern"; internId: string };
@@ -111,7 +113,6 @@ export interface CrmData {
   activities: Activity[];
   followUps: FollowUpLog[];
   workSessions: WorkSession[];
-  monthlyTargets: Record<string, number>;
   settings: Settings;
   readNotificationIds: string[];
   session: Session | null;
