@@ -4,7 +4,6 @@ import {
   Activity as ActivityIcon,
   Bell,
   CalendarClock,
-  Calendar as CalendarIcon,
   KeyRound,
   LayoutDashboard,
   LogOut,
@@ -25,7 +24,6 @@ type NavItem = { to: NonNullable<LinkProps["to"]>; label: string; icon: LucideIc
 const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/leads", label: "Leads", icon: Users },
-  { to: "/calendar", label: "Calendar", icon: CalendarIcon },
   { to: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
   { to: "/activities", label: "Activities", icon: ActivityIcon },
   { to: "/notifications", label: "Notifications", icon: Bell },
