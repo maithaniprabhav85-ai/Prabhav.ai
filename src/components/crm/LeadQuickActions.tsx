@@ -23,7 +23,13 @@ export function LeadQuickActions({ lead }: { lead: Lead }) {
                 rel={channel === "whatsapp" ? "noreferrer" : undefined}
                 aria-label={`${label} ${lead.contactPerson}`}
                 title={label}
-                onClick={() => logLeadContact(lead.id, channel)}
+                onClick={(event) => {
+                  logLeadContact(lead.id, channel);
+                  if (channel !== "whatsapp") {
+                    event.preventDefault();
+                    window.setTimeout(() => window.location.assign(href), 100);
+                  }
+                }}
               >
                 <Icon className="size-4" />
               </a>
