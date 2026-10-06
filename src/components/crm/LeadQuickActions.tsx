@@ -1,6 +1,5 @@
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCrm } from "@/lib/crm/context";
 import type { Lead } from "@/lib/crm/types";
 
@@ -17,22 +16,18 @@ export function LeadQuickActions({ lead }: { lead: Lead }) {
   return (
     <div className="flex items-center gap-1" aria-label={`Contact ${lead.contactPerson}`}>
       {actions.map(({ label, href, icon: Icon, channel }) => (
-        <Tooltip key={channel}>
-          <TooltipTrigger asChild>
-            <Button asChild variant="ghost" size="icon">
+            <Button key={channel} asChild variant="ghost" size="icon">
               <a
                 href={href}
                 target={channel === "whatsapp" ? "_blank" : undefined}
                 rel={channel === "whatsapp" ? "noreferrer" : undefined}
                 aria-label={`${label} ${lead.contactPerson}`}
+                title={label}
                 onClick={() => logLeadContact(lead.id, channel)}
               >
                 <Icon className="size-4" />
               </a>
             </Button>
-          </TooltipTrigger>
-          <TooltipContent>{label}</TooltipContent>
-        </Tooltip>
       ))}
     </div>
   );
