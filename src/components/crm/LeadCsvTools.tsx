@@ -72,7 +72,8 @@ function ImportLeads() {
       const intern = interns.find((item) => item.id === values.internId || item.code === values.internId) ?? interns[0];
       const status = LEAD_STATUSES.includes(values.status as Lead["status"]) ? values.status as Lead["status"] : "New";
       const priority = LEAD_PRIORITIES.includes(values.priority as Lead["priority"]) ? values.priority as Lead["priority"] : "Warm";
-      const result = addLead({ company: values.company, contactPerson: values.contactPerson, email: values.email ?? "", phone: values.phone ?? "", industry: INDUSTRIES.includes(values.industry ?? "") ? values.industry ?? INDUSTRIES[0] : INDUSTRIES[0], location: values.location ?? "", status, priority, internId: intern?.id ?? "", nextFollowUp: values.nextFollowUp ?? "", notes: values.notes ?? "" }, importDuplicates);
+      const industry = INDUSTRIES.includes(values.industry ?? "") ? values.industry ?? INDUSTRIES[0] : INDUSTRIES[0];
+      const result = addLead({ company: values.company, contactPerson: values.contactPerson, email: values.email ?? "", phone: values.phone ?? "", industry: industry ?? "SaaS", location: values.location ?? "", status, priority, internId: intern?.id ?? "", nextFollowUp: values.nextFollowUp ?? "", notes: values.notes ?? "" }, importDuplicates);
       if (result.ok) imported += 1; else skipped += 1;
     }
     toast.success(`${imported} lead${imported === 1 ? "" : "s"} imported${skipped ? ` · ${skipped} skipped` : ""}`); setOpen(false);
