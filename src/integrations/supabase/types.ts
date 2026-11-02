@@ -303,6 +303,7 @@ export type Database = {
       has_crm_permission: { Args: { _permission: string }; Returns: boolean }
       is_founder: { Args: never; Returns: boolean }
       owns_intern: { Args: { _intern_id: string }; Returns: boolean }
+      touch_intern_presence: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "founder" | "intern"

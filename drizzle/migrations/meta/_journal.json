@@ -8,6 +8,13 @@
       "when": 1793628852297,
       "tag": "0000_leadpilot_shared_crm_security",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793628981750,
+      "tag": "0001_leadpilot_auth_presence_audit",
+      "breakpoints": true
     }
   ]
 }
