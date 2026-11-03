@@ -22,6 +22,7 @@ export type Database = {
           id: string
           intern_id: string | null
           lead_id: string | null
+          legacy_id: string | null
           message: string
           type: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string | null
+          legacy_id?: string | null
           message?: string
           type: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string | null
+          legacy_id?: string | null
           message?: string
           type?: string
         }
@@ -54,6 +57,7 @@ export type Database = {
           id: string
           intern_id: string | null
           lead_id: string
+          legacy_id: string | null
           scheduled_for: string | null
         }
         Insert: {
@@ -62,6 +66,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id: string
+          legacy_id?: string | null
           scheduled_for?: string | null
         }
         Update: {
@@ -70,6 +75,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string
+          legacy_id?: string | null
           scheduled_for?: string | null
         }
         Relationships: []
@@ -83,11 +89,13 @@ export type Database = {
           email: string
           id: string
           is_active: boolean
+          is_online: boolean
           last_activity_at: string | null
           name: string
           permissions: Json
           phone: string
           start_date: string
+          target_leads: number
           updated_at: string
           user_id: string | null
           working_hours: number
@@ -100,11 +108,13 @@ export type Database = {
           email: string
           id?: string
           is_active?: boolean
+          is_online?: boolean
           last_activity_at?: string | null
           name: string
           permissions?: Json
           phone?: string
           start_date?: string
+          target_leads?: number
           updated_at?: string
           user_id?: string | null
           working_hours?: number
@@ -117,11 +127,13 @@ export type Database = {
           email?: string
           id?: string
           is_active?: boolean
+          is_online?: boolean
           last_activity_at?: string | null
           name?: string
           permissions?: Json
           phone?: string
           start_date?: string
+          target_leads?: number
           updated_at?: string
           user_id?: string | null
           working_hours?: number
@@ -139,6 +151,7 @@ export type Database = {
           id: string
           industry: string
           intern_id: string | null
+          legacy_id: string | null
           location: string
           next_follow_up: string | null
           notes: string
@@ -157,6 +170,7 @@ export type Database = {
           id?: string
           industry?: string
           intern_id?: string | null
+          legacy_id?: string | null
           location?: string
           next_follow_up?: string | null
           notes?: string
@@ -175,6 +189,7 @@ export type Database = {
           id?: string
           industry?: string
           intern_id?: string | null
+          legacy_id?: string | null
           location?: string
           next_follow_up?: string | null
           notes?: string
@@ -244,6 +259,7 @@ export type Database = {
           ended_at: string | null
           id: string
           intern_id: string
+          legacy_id: string | null
           started_at: string
         }
         Insert: {
@@ -251,6 +267,7 @@ export type Database = {
           ended_at?: string | null
           id?: string
           intern_id: string
+          legacy_id?: string | null
           started_at?: string
         }
         Update: {
@@ -258,6 +275,7 @@ export type Database = {
           ended_at?: string | null
           id?: string
           intern_id?: string
+          legacy_id?: string | null
           started_at?: string
         }
         Relationships: []
@@ -303,6 +321,7 @@ export type Database = {
       has_crm_permission: { Args: { _permission: string }; Returns: boolean }
       is_founder: { Args: never; Returns: boolean }
       owns_intern: { Args: { _intern_id: string }; Returns: boolean }
+      set_intern_presence: { Args: { _online: boolean }; Returns: undefined }
       touch_intern_presence: { Args: never; Returns: undefined }
     }
     Enums: {

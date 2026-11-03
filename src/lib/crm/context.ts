@@ -39,10 +39,12 @@ export interface Ctx {
   session: Session | null;
   isFounder: boolean;
   currentIntern: Intern | null;
-  signIn: (userId: string, password: string) => boolean;
-  signOut: () => void;
-  changePassword: (current: string, next: string) => { ok: boolean; error?: string };
-  setInternPassword: (internId: string, next: string) => { ok: boolean; error?: string };
+  signIn: (userId: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  signUpFounder: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  signOut: () => Promise<void>;
+  changePassword: (current: string, next: string) => Promise<{ ok: boolean; error?: string }>;
+  setInternPassword: (internId: string, next: string) => Promise<{ ok: boolean; error?: string }>;
+  inviteIntern: (email: string) => Promise<{ ok: boolean; error?: string }>;
 
   addLead: (l: Omit<Lead, "id" | "createdAt">, allowDuplicate?: boolean) => { ok: boolean; duplicate?: Lead };
   findDuplicateLead: (l: Pick<Lead, "company" | "email" | "phone">) => Lead | undefined;
@@ -56,13 +58,16 @@ export interface Ctx {
   startWork: () => void;
   stopWork: () => void;
   insightsFor: (id: string) => InternInsights;
-  addIntern: (i: Omit<Intern, "id" | "code">) => { ok: boolean; error?: string };
-  updateIntern: (id: string, patch: Partial<Omit<Intern, "id" | "code">>) => void;
-  deleteIntern: (id: string) => void;
+  addIntern: (i: Omit<Intern, "id" | "code">) => Promise<{ ok: boolean; error?: string }>;
+  updateIntern: (id: string, patch: Partial<Omit<Intern, "id" | "code">>) => Promise<void>;
+  deleteIntern: (id: string) => Promise<void>;
   completeFollowUp: (leadId: string) => void;
   rescheduleFollowUp: (leadId: string, date: string) => void;
-  updateSettings: (patch: Partial<Settings>) => void;
+  updateSettings: (patch: Partial<Settings>) => Promise<void>;
   resetDemoData: () => void;
+  importLegacyData: () => Promise<{ ok: boolean; error?: string; imported?: number }>;
+  hasLegacyData: boolean;
+  refresh: () => Promise<void>;
   internStats: (id: string) => InternStats | undefined;
   allStats: InternStats[];
   setMonthlyTarget: (internId: string, target: number) => void;

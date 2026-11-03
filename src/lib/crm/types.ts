@@ -34,9 +34,14 @@ export interface Intern {
   startDate: string;
   workingHours: number;
   /** Login password for this intern (demo-only, stored locally) */
-  password: string;
+  password?: string;
+  userId?: string | null;
   /** True while this intern is signed in on this device */
   online?: boolean;
+  isOnline?: boolean;
+  isActive?: boolean;
+  lastActivityAt?: string;
+  permissions?: Record<string, boolean>;
   targetLeads?: number;
 }
 
@@ -68,7 +73,7 @@ export interface Activity {
   id: string;
   leadId?: string;
   internId?: string;
-  type:
+  type: string | 
     | "lead_created"
     | "lead_updated"
     | "lead_deleted"
@@ -101,7 +106,7 @@ export interface Settings {
   notifyUpcoming: boolean;
   adminId: string;
   adminEmail: string;
-  adminPassword: string;
+  adminPassword?: string;
   defaultTargetLeads: number;
 }
 

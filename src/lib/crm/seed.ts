@@ -26,7 +26,6 @@ const interns = internNames.map((name, i) => ({
   name,
   department: departments[i % departments.length]!,
   designation: designations[i % designations.length]!,
-  password: `intern${i + 1}`,
   online: false,
   email: `${name.split(" ")[0]!.toLowerCase()}@leadpilot.io`,
   phone: `+91 9${String(811000000 + i * 3210987).slice(0, 9)}`,
@@ -106,7 +105,6 @@ export const seedData: CrmData = {
     notifyUpcoming: true,
     adminId: "admin",
     adminEmail: "admin@pixelinfinite.ai",
-    adminPassword: "admin123",
     defaultTargetLeads: 20,
   },
 };
