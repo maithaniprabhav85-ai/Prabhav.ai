@@ -83,11 +83,13 @@ export type Database = {
           email: string
           id: string
           is_active: boolean
+          is_online: boolean
           last_activity_at: string | null
           name: string
           permissions: Json
           phone: string
           start_date: string
+          target_leads: number
           updated_at: string
           user_id: string | null
           working_hours: number
@@ -100,11 +102,13 @@ export type Database = {
           email: string
           id?: string
           is_active?: boolean
+          is_online?: boolean
           last_activity_at?: string | null
           name: string
           permissions?: Json
           phone?: string
           start_date?: string
+          target_leads?: number
           updated_at?: string
           user_id?: string | null
           working_hours?: number
@@ -117,11 +121,13 @@ export type Database = {
           email?: string
           id?: string
           is_active?: boolean
+          is_online?: boolean
           last_activity_at?: string | null
           name?: string
           permissions?: Json
           phone?: string
           start_date?: string
+          target_leads?: number
           updated_at?: string
           user_id?: string | null
           working_hours?: number
@@ -303,6 +309,7 @@ export type Database = {
       has_crm_permission: { Args: { _permission: string }; Returns: boolean }
       is_founder: { Args: never; Returns: boolean }
       owns_intern: { Args: { _intern_id: string }; Returns: boolean }
+      set_intern_presence: { Args: { _online: boolean }; Returns: undefined }
       touch_intern_presence: { Args: never; Returns: undefined }
     }
     Enums: {
