@@ -22,6 +22,13 @@
       "when": 1793695635146,
       "tag": "0002_leadpilot_account_presence_targets",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793695899051,
+      "tag": "0003_leadpilot_import_and_settings_read",
+      "breakpoints": true
     }
   ]
 }

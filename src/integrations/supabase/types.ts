@@ -22,6 +22,7 @@ export type Database = {
           id: string
           intern_id: string | null
           lead_id: string | null
+          legacy_id: string | null
           message: string
           type: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string | null
+          legacy_id?: string | null
           message?: string
           type: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string | null
+          legacy_id?: string | null
           message?: string
           type?: string
         }
@@ -54,6 +57,7 @@ export type Database = {
           id: string
           intern_id: string | null
           lead_id: string
+          legacy_id: string | null
           scheduled_for: string | null
         }
         Insert: {
@@ -62,6 +66,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id: string
+          legacy_id?: string | null
           scheduled_for?: string | null
         }
         Update: {
@@ -70,6 +75,7 @@ export type Database = {
           id?: string
           intern_id?: string | null
           lead_id?: string
+          legacy_id?: string | null
           scheduled_for?: string | null
         }
         Relationships: []
@@ -145,6 +151,7 @@ export type Database = {
           id: string
           industry: string
           intern_id: string | null
+          legacy_id: string | null
           location: string
           next_follow_up: string | null
           notes: string
@@ -163,6 +170,7 @@ export type Database = {
           id?: string
           industry?: string
           intern_id?: string | null
+          legacy_id?: string | null
           location?: string
           next_follow_up?: string | null
           notes?: string
@@ -181,6 +189,7 @@ export type Database = {
           id?: string
           industry?: string
           intern_id?: string | null
+          legacy_id?: string | null
           location?: string
           next_follow_up?: string | null
           notes?: string
@@ -250,6 +259,7 @@ export type Database = {
           ended_at: string | null
           id: string
           intern_id: string
+          legacy_id: string | null
           started_at: string
         }
         Insert: {
@@ -257,6 +267,7 @@ export type Database = {
           ended_at?: string | null
           id?: string
           intern_id: string
+          legacy_id?: string | null
           started_at?: string
         }
         Update: {
@@ -264,6 +275,7 @@ export type Database = {
           ended_at?: string | null
           id?: string
           intern_id?: string
+          legacy_id?: string | null
           started_at?: string
         }
         Relationships: []
