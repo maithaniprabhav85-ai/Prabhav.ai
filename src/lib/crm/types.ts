@@ -35,6 +35,7 @@ export interface Intern {
   workingHours: number;
   /** Login password for this intern (demo-only, stored locally) */
   password?: string;
+  userId?: string | null;
   /** True while this intern is signed in on this device */
   online?: boolean;
   isOnline?: boolean;
@@ -105,7 +106,7 @@ export interface Settings {
   notifyUpcoming: boolean;
   adminId: string;
   adminEmail: string;
-  adminPassword: string;
+  adminPassword?: string;
   defaultTargetLeads: number;
 }
 
