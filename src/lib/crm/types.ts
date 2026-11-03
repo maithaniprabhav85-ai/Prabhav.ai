@@ -73,8 +73,8 @@ export interface Activity {
   id: string;
   leadId?: string;
   internId?: string;
-  type: string | 
-    | "lead_created"
+  type:
+    "lead_created"
     | "lead_updated"
     | "lead_deleted"
     | "followup_completed"
