@@ -1,3 +1,5 @@
+import type { CrmEcosystem } from "./ecosystem";
+
 export type LeadStatus = "New" | "Contacted" | "Follow-up" | "Qualified" | "Converted" | "Lost";
 export type LeadPriority = "Hot" | "Warm" | "Cold";
 
@@ -121,4 +123,5 @@ export interface CrmData {
   settings: Settings;
   readNotificationIds: string[];
   session: Session | null;
+  ecosystem?: CrmEcosystem;
 }
