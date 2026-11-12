@@ -3,6 +3,16 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { seedData } from "./seed";
 import type { Activity, CrmData, Intern, Lead, Session, WorkSession } from "./types";
 import { CrmContext, type Ctx, type CrmNotification, type InternInsights, type InternStats } from "./context";
+import {
+  isFeatureReleased,
+  normalizeEcosystem,
+  type CrmEcosystem,
+  type CrmFeature,
+  type PersonalLeadNote,
+  type PersonalTask,
+  type SavedLeadFilter,
+  type ThemePreset,
+} from "./ecosystem";
 
 export type { InternStats, CrmNotification } from "./context";
 
@@ -43,6 +53,7 @@ function load(): CrmData {
       readNotificationIds: parsed.readNotificationIds ?? [],
       session: parsed.session ?? null,
       settings: savedSettings,
+      ecosystem: normalizeEcosystem(parsed.ecosystem),
     };
   } catch {
     return seedData;
@@ -77,6 +88,13 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     const session = data.session;
     const isFounder = session?.role === "Founder";
     const currentIntern = session?.role === "Intern" ? data.interns.find((i) => i.id === session.internId) ?? null : null;
+    const ecosystem = normalizeEcosystem(data.ecosystem);
+    const accountKey = isFounder ? "founder-local" : currentIntern ? `intern-local:${currentIntern.id}` : "guest-local";
+    const recordFeatureActivity = (d: CrmData, message: string): CrmData => logActivity(d, {
+      type: "feature_updated",
+      message,
+      internId: currentIntern?.id,
+    });
     const mine = <T extends { internId?: string }>(rows: T[]) =>
       isFounder || !currentIntern ? rows : rows.filter((r) => r.internId === currentIntern.id);
 
@@ -174,6 +192,8 @@ export function CrmProvider({ children }: { children: ReactNode }) {
 
     return {
       data,
+      ecosystem,
+      accountKey,
       hydrated,
       interns: visibleInterns,
       leads: visibleLeads,
@@ -279,6 +299,99 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       unreadCount: notifications.filter((n) => !data.readNotificationIds.includes(n.id)).length,
       markAllRead: () => setData((d) => ({ ...d, readNotificationIds: notifications.map((n) => n.id) })),
       internStats: (id) => allStats.find((s) => s.intern.id === id),
+      chooseTheme: (themeId) => {
+        const allThemes = [...THEME_PRESETS, ...ecosystem.themes.customPresets];
+        const approved = isFounder || ecosystem.themes.internApprovedThemeIds.includes(themeId);
+        if (!approved || !allThemes.some((theme) => theme.id === themeId)) return;
+        setData((d) => ({ ...d, ecosystem: { ...normalizeEcosystem(d.ecosystem), themes: { ...normalizeEcosystem(d.ecosystem).themes, byAccount: { ...normalizeEcosystem(d.ecosystem).themes.byAccount, [accountKey]: themeId } } } }));
+      },
+      saveCustomTheme: (preset: ThemePreset) => {
+        if (!isFounder) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const next = { ...preset, id: preset.id || `custom-${uid()}` };
+          return recordFeatureActivity({ ...d, ecosystem: { ...current, themes: { ...current.themes, byAccount: { ...current.themes.byAccount, [accountKey]: next.id }, customPresets: [...current.themes.customPresets.filter((theme) => theme.id !== next.id), next] } } }, `Saved custom theme: ${next.name}`);
+        });
+      },
+      setInternApprovedThemes: (themeIds) => {
+        if (!isFounder) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          return { ...d, ecosystem: { ...current, themes: { ...current.themes, internApprovedThemeIds: [...new Set(themeIds)] } } };
+        });
+      },
+      addFeature: (feature: CrmFeature) => {
+        if (!isFounder || ecosystem.features.some((item) => item.id === feature.id)) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          return recordFeatureActivity({ ...d, ecosystem: { ...current, features: [...current.features, { ...feature, updatedAt: new Date().toISOString() }] } }, `Feature added: ${feature.name}`);
+        });
+      },
+      updateFeature: (id: string, patch: Partial<CrmFeature>) => {
+        if (!isFounder) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const feature = current.features.find((item) => item.id === id);
+          if (!feature) return d;
+          const updated = { ...feature, ...patch, updatedAt: new Date().toISOString() };
+          return recordFeatureActivity({ ...d, ecosystem: { ...current, features: current.features.map((item) => item.id === id ? updated : item) } }, `Feature updated: ${updated.name}`);
+        });
+      },
+      setFeatureActive: (id: string, active: boolean) => {
+        const feature = ecosystem.features.find((item) => item.id === id);
+        if (!feature || feature.role !== "intern" || !feature.approved || !feature.globallyEnabled || feature.removed || !isFeatureReleased(feature, today(), ecosystem.releaseSettings.paused)) return false;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const preferences = current.featurePreferences[accountKey] ?? {};
+          return { ...d, ecosystem: { ...current, featurePreferences: { ...current.featurePreferences, [accountKey]: { ...preferences, [id]: active } } } };
+        });
+        return true;
+      },
+      saveTask: (task: Omit<PersonalTask, "id" | "accountKey" | "createdAt" | "updatedAt">, id?: string) => {
+        if (!currentIntern) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const existing = current.tasks.find((item) => item.id === id && item.accountKey === accountKey);
+          const now = new Date().toISOString();
+          const updated: PersonalTask = { ...task, id: existing?.id ?? uid(), accountKey, createdAt: existing?.createdAt ?? now, updatedAt: now };
+          return { ...d, ecosystem: { ...current, tasks: existing ? current.tasks.map((item) => item.id === existing.id ? updated : item) : [...current.tasks, updated] } };
+        });
+      },
+      deleteTask: (id) => {
+        if (!currentIntern) return;
+        setData((d) => { const current = normalizeEcosystem(d.ecosystem); return { ...d, ecosystem: { ...current, tasks: current.tasks.filter((item) => item.id !== id || item.accountKey !== accountKey) } }; });
+      },
+      saveLeadNote: (leadId: string, body: string, id?: string) => {
+        if (!currentIntern || !allVisibleLeads.some((lead) => lead.id === leadId && lead.internId === currentIntern.id)) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const existing = current.leadNotes.find((item) => item.id === id && item.accountKey === accountKey);
+          const now = new Date().toISOString();
+          const note: PersonalLeadNote = { id: existing?.id ?? uid(), accountKey, leadId, body, createdAt: existing?.createdAt ?? now, updatedAt: now };
+          return { ...d, ecosystem: { ...current, leadNotes: existing ? current.leadNotes.map((item) => item.id === existing.id ? note : item) : [...current.leadNotes, note] } };
+        });
+      },
+      deleteLeadNote: (id) => {
+        if (!currentIntern) return;
+        setData((d) => { const current = normalizeEcosystem(d.ecosystem); return { ...d, ecosystem: { ...current, leadNotes: current.leadNotes.filter((item) => item.id !== id || item.accountKey !== accountKey) } }; });
+      },
+      saveLeadFilter: (filter: Omit<SavedLeadFilter, "id" | "accountKey" | "createdAt">, id?: string) => {
+        if (!currentIntern) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const existing = current.savedFilters.find((item) => item.id === id && item.accountKey === accountKey);
+          const saved: SavedLeadFilter = { ...filter, id: existing?.id ?? uid(), accountKey, createdAt: existing?.createdAt ?? new Date().toISOString() };
+          return { ...d, ecosystem: { ...current, savedFilters: existing ? current.savedFilters.map((item) => item.id === existing.id ? saved : item) : [...current.savedFilters, saved] } };
+        });
+      },
+      deleteLeadFilter: (id) => {
+        if (!currentIntern) return;
+        setData((d) => { const current = normalizeEcosystem(d.ecosystem); return { ...d, ecosystem: { ...current, savedFilters: current.savedFilters.filter((item) => item.id !== id || item.accountKey !== accountKey) } }; });
+      },
+      updateEcosystem: (patch: Partial<CrmEcosystem>) => {
+        if (!isFounder) return;
+        setData((d) => ({ ...d, ecosystem: { ...normalizeEcosystem(d.ecosystem), ...patch } }));
+      },
       findDuplicateLead: (candidate) => {
         const email = candidate.email.trim().toLowerCase();
         const phone = candidate.phone.replace(/\D/g, "");

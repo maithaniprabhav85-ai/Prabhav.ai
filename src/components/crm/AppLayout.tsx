@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { ChangePasswordDialog } from "@/components/crm/ChangePasswordDialog";
 import { useCrm } from "@/lib/crm/context";
 import { cn } from "@/lib/utils";
+import { THEME_PRESETS, themeCssProperties } from "@/lib/crm/ecosystem";
 
 type NavItem = { to: NonNullable<LinkProps["to"]>; label: string; icon: LucideIcon };
 
@@ -126,9 +127,14 @@ function Brand() {
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const { ecosystem, accountKey } = useCrm();
+  const activeThemeId = ecosystem.themes.byAccount[accountKey] ?? "classic-light";
+  const activeTheme = [...THEME_PRESETS, ...ecosystem.themes.customPresets].find((theme) => theme.id === activeThemeId);
+  const activeColors = ecosystem.themes.customColorsByAccount[accountKey] ?? activeTheme?.colors;
+  const themeStyle = activeColors ? themeCssProperties(activeColors) as React.CSSProperties : undefined;
 
   return (
-    <div className="relative min-h-screen bg-background lg:flex">
+    <div style={themeStyle} className="relative min-h-screen bg-background lg:flex">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-[radial-gradient(65%_50%_at_85%_0%,color-mix(in_oklab,var(--color-primary)_10%,transparent),transparent),radial-gradient(50%_40%_at_0%_100%,color-mix(in_oklab,var(--color-info)_8%,transparent),transparent)]" />

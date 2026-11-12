@@ -157,6 +157,7 @@ export interface SavedLeadFilter {
 export interface CrmEcosystem {
   themes: {
     byAccount: Record<string, string>;
+    customColorsByAccount: Record<string, ThemeColors>;
     customPresets: ThemePreset[];
     internApprovedThemeIds: string[];
   };
@@ -211,6 +212,7 @@ export function createDefaultEcosystem(startDate = dayString(new Date())): CrmEc
   return {
     themes: {
       byAccount: {},
+      customColorsByAccount: {},
       customPresets: [],
       internApprovedThemeIds: ["classic-light", "pure-white", "ocean-blue"],
     },
@@ -243,6 +245,7 @@ export function normalizeEcosystem(raw?: Partial<CrmEcosystem> | null): CrmEcosy
       ...defaults.themes,
       ...raw.themes,
       byAccount: raw.themes?.byAccount ?? {},
+      customColorsByAccount: raw.themes?.customColorsByAccount ?? {},
       customPresets: raw.themes?.customPresets ?? [],
       internApprovedThemeIds: raw.themes?.internApprovedThemeIds ?? defaults.themes.internApprovedThemeIds,
     },
@@ -273,8 +276,14 @@ export function nextReleaseDate(initialDate: string, intervalDays: number, today
   return addDays(initialDate, slot * safeInterval);
 }
 
-export function isFeatureReleased(feature: CrmFeature, today = dayString(new Date()), paused = false): boolean {
-  return !paused || feature.releaseDate <= today;
+export function isFeatureReleased(
+  feature: CrmFeature,
+  today = dayString(new Date()),
+  paused = false,
+  initialDate = today,
+): boolean {
+  if (feature.releaseDate <= initialDate) return true;
+  return !paused && feature.releaseDate <= today;
 }
 
 export const THEME_CSS_VARS: Record<ThemeColorKey, string> = {
@@ -293,5 +302,32 @@ export const THEME_CSS_VARS: Record<ThemeColorKey, string> = {
 };
 
 export function themeCssProperties(colors: ThemeColors): Record<string, string> {
-  return Object.fromEntries(Object.entries(THEME_CSS_VARS).map(([key, variable]) => [variable, colors[key as ThemeColorKey]]));
+  const luminance = (hex: string) => {
+    const value = hex.replace("#", "");
+    if (!/^[0-9a-fA-F]{6}$/.test(value)) return 1;
+    const channels = [0, 2, 4].map((index) => parseInt(value.slice(index, index + 2), 16) / 255);
+    const linear = channels.map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+    return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+  };
+  const contrast = (hex: string) => luminance(hex) > 0.48 ? "#172033" : "#FFFFFF";
+  const sidebarText = contrast(colors.sidebarBackground);
+  const primaryText = contrast(colors.primaryButton);
+  const secondaryText = contrast(colors.secondaryButton);
+  return {
+    ...Object.fromEntries(Object.entries(THEME_CSS_VARS).map(([key, variable]) => [variable, colors[key as ThemeColorKey]])),
+    "--card-foreground": colors.text,
+    "--popover": colors.cardBackground,
+    "--popover-foreground": colors.text,
+    "--navy-foreground": contrast(colors.heading),
+    "--primary-foreground": primaryText,
+    "--secondary-foreground": secondaryText,
+    "--accent-foreground": colors.text,
+    "--sidebar-foreground": sidebarText,
+    "--sidebar-accent-foreground": sidebarText,
+    "--sidebar-primary-foreground": contrast(colors.activeNavigation),
+    "--sidebar-border": colors.border,
+    "--sidebar-ring": colors.accent,
+    "--ring": colors.accent,
+    "--input": colors.border,
+  };
 }

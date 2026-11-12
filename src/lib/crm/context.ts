@@ -1,5 +1,6 @@
 import { createContext, useContext, type Context } from "react";
 import type { Activity, CrmData, FollowUpLog, Intern, Lead, Session, Settings, WorkSession } from "./types";
+import type { CrmEcosystem, CrmFeature, PersonalLeadNote, PersonalTask, SavedLeadFilter, ThemeColors, ThemePreset } from "./ecosystem";
 
 export interface InternStats {
   intern: Intern;
@@ -69,6 +70,23 @@ export interface Ctx {
   notifications: CrmNotification[];
   unreadCount: number;
   markAllRead: () => void;
+  ecosystem: CrmEcosystem;
+  accountKey: string;
+  chooseTheme: (themeId: string) => void;
+  setPersonalThemeColors: (colors: ThemeColors | null) => void;
+  previewTheme: (colors: import("./ecosystem").ThemeColors | null) => void;
+  saveCustomTheme: (preset: ThemePreset) => void;
+  setInternApprovedThemes: (themeIds: string[]) => void;
+  addFeature: (feature: CrmFeature) => void;
+  updateFeature: (id: string, patch: Partial<CrmFeature>) => void;
+  setFeatureActive: (id: string, active: boolean) => boolean;
+  saveTask: (task: Omit<PersonalTask, "id" | "accountKey" | "createdAt" | "updatedAt">, id?: string) => void;
+  deleteTask: (id: string) => void;
+  saveLeadNote: (leadId: string, body: string, id?: string) => void;
+  deleteLeadNote: (id: string) => void;
+  saveLeadFilter: (filter: Omit<SavedLeadFilter, "id" | "accountKey" | "createdAt">, id?: string) => void;
+  deleteLeadFilter: (id: string) => void;
+  updateEcosystem: (patch: Partial<CrmEcosystem>) => void;
 }
 
 type CrmGlobal = typeof globalThis & {

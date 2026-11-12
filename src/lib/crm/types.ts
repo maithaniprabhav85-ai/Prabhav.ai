@@ -86,7 +86,8 @@ export interface Activity {
     | "intern_deleted"
     | "whatsapp_clicked"
     | "call_clicked"
-    | "email_clicked";
+    | "email_clicked"
+    | "feature_updated";
   message: string;
   createdAt: string;
 }
