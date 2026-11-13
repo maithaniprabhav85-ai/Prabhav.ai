@@ -305,6 +305,16 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         if (!approved || !allThemes.some((theme) => theme.id === themeId)) return;
         setData((d) => ({ ...d, ecosystem: { ...normalizeEcosystem(d.ecosystem), themes: { ...normalizeEcosystem(d.ecosystem).themes, byAccount: { ...normalizeEcosystem(d.ecosystem).themes.byAccount, [accountKey]: themeId } } } }));
       },
+      setPersonalThemeColors: (colors) => {
+        if (!currentIntern) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const customColorsByAccount = { ...current.themes.customColorsByAccount };
+          if (colors) customColorsByAccount[accountKey] = colors;
+          else delete customColorsByAccount[accountKey];
+          return { ...d, ecosystem: { ...current, themes: { ...current.themes, customColorsByAccount } } };
+        });
+      },
       saveCustomTheme: (preset: ThemePreset) => {
         if (!isFounder) return;
         setData((d) => {
@@ -339,11 +349,12 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       },
       setFeatureActive: (id: string, active: boolean) => {
         const feature = ecosystem.features.find((item) => item.id === id);
-        if (!feature || feature.role !== "intern" || !feature.approved || !feature.globallyEnabled || feature.removed || !isFeatureReleased(feature, today(), ecosystem.releaseSettings.paused)) return false;
+        if (!currentIntern || !feature || feature.role !== "intern" || !feature.approved || !feature.globallyEnabled || feature.removed || !isFeatureReleased(feature, today(), ecosystem.releaseSettings.paused, ecosystem.releaseSettings.initialDate)) return false;
         setData((d) => {
           const current = normalizeEcosystem(d.ecosystem);
           const preferences = current.featurePreferences[accountKey] ?? {};
-          return { ...d, ecosystem: { ...current, featurePreferences: { ...current.featurePreferences, [accountKey]: { ...preferences, [id]: active } } } };
+          const next = { ...d, ecosystem: { ...current, featurePreferences: { ...current.featurePreferences, [accountKey]: { ...preferences, [id]: active } } } };
+          return recordFeatureActivity(next, `Feature ${active ? "activated" : "deactivated"}: ${feature.name}`);
         });
         return true;
       },
@@ -387,6 +398,22 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       deleteLeadFilter: (id) => {
         if (!currentIntern) return;
         setData((d) => { const current = normalizeEcosystem(d.ecosystem); return { ...d, ecosystem: { ...current, savedFilters: current.savedFilters.filter((item) => item.id !== id || item.accountKey !== accountKey) } }; });
+      },
+      activateLeadFilter: (id) => {
+        if (!currentIntern || !ecosystem.savedFilters.some((filter) => filter.id === id && filter.accountKey === accountKey)) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          return { ...d, ecosystem: { ...current, activeSavedFilterByAccount: { ...current.activeSavedFilterByAccount, [accountKey]: id } } };
+        });
+      },
+      clearActiveLeadFilter: () => {
+        if (!currentIntern) return;
+        setData((d) => {
+          const current = normalizeEcosystem(d.ecosystem);
+          const activeSavedFilterByAccount = { ...current.activeSavedFilterByAccount };
+          delete activeSavedFilterByAccount[accountKey];
+          return { ...d, ecosystem: { ...current, activeSavedFilterByAccount } };
+        });
       },
       updateEcosystem: (patch: Partial<CrmEcosystem>) => {
         if (!isFounder) return;

@@ -86,6 +86,8 @@ export interface Ctx {
   deleteLeadNote: (id: string) => void;
   saveLeadFilter: (filter: Omit<SavedLeadFilter, "id" | "accountKey" | "createdAt">, id?: string) => void;
   deleteLeadFilter: (id: string) => void;
+  activateLeadFilter: (id: string) => void;
+  clearActiveLeadFilter: () => void;
   updateEcosystem: (patch: Partial<CrmEcosystem>) => void;
 }
 

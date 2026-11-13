@@ -179,6 +179,7 @@ export interface CrmEcosystem {
   tasks: PersonalTask[];
   leadNotes: PersonalLeadNote[];
   savedFilters: SavedLeadFilter[];
+  activeSavedFilterByAccount: Record<string, string>;
 }
 
 export const INTERN_FEATURES = [
@@ -230,6 +231,7 @@ export function createDefaultEcosystem(startDate = dayString(new Date())): CrmEc
     tasks: [],
     leadNotes: [],
     savedFilters: [],
+    activeSavedFilterByAccount: {},
   };
 }
 
@@ -256,6 +258,7 @@ export function normalizeEcosystem(raw?: Partial<CrmEcosystem> | null): CrmEcosy
     tasks: raw.tasks ?? [],
     leadNotes: raw.leadNotes ?? [],
     savedFilters: raw.savedFilters ?? [],
+    activeSavedFilterByAccount: raw.activeSavedFilterByAccount ?? {},
   };
 }
 
@@ -289,7 +292,7 @@ export function isFeatureReleased(
 export const THEME_CSS_VARS: Record<ThemeColorKey, string> = {
   background: "--background",
   sidebarBackground: "--sidebar",
-  headerBackground: "--card",
+  headerBackground: "--header-background",
   cardBackground: "--card",
   primaryButton: "--primary",
   secondaryButton: "--secondary",
@@ -316,6 +319,7 @@ export function themeCssProperties(colors: ThemeColors): Record<string, string> 
   return {
     ...Object.fromEntries(Object.entries(THEME_CSS_VARS).map(([key, variable]) => [variable, colors[key as ThemeColorKey]])),
     "--card-foreground": colors.text,
+    "--header-background": colors.headerBackground,
     "--popover": colors.cardBackground,
     "--popover-foreground": colors.text,
     "--navy-foreground": contrast(colors.heading),

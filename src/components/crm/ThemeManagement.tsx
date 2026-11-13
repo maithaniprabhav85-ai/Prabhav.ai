@@ -11,7 +11,7 @@ import { THEME_COLOR_FIELDS, THEME_PRESETS, type ThemeColors, type ThemePreset, 
 const validHex = /^#[0-9a-fA-F]{6}$/;
 
 export function ThemeManagement() {
-  const { isFounder, accountKey, ecosystem, chooseTheme, saveCustomTheme, setInternApprovedThemes } = useCrm();
+  const { isFounder, accountKey, ecosystem, chooseTheme, saveCustomTheme, setInternApprovedThemes, setPersonalThemeColors } = useCrm();
   const allThemes = useMemo(() => [...THEME_PRESETS, ...ecosystem.themes.customPresets], [ecosystem.themes.customPresets]);
   const selectedThemeId = ecosystem.themes.byAccount[accountKey] ?? "classic-light";
   const selectedTheme = allThemes.find((theme) => theme.id === selectedThemeId) ?? THEME_PRESETS[0];
@@ -38,6 +38,15 @@ export function ThemeManagement() {
     const preset: ThemePreset = { id: `custom-${Date.now()}`, name: themeName.trim(), colors: draft };
     saveCustomTheme(preset);
     toast.success("Theme saved and applied to your account.");
+  };
+
+  const applyPersonal = () => {
+    if (THEME_COLOR_FIELDS.some(({ key }) => !validHex(draft[key]))) {
+      toast.error("Enter a valid 6-digit HEX color for each field.");
+      return;
+    }
+    setPersonalThemeColors(draft);
+    toast.success("Personal appearance saved.");
   };
 
   const colorFields = isFounder
@@ -84,18 +93,19 @@ export function ThemeManagement() {
               })}
             </div>
           </div>
-        ) : <p className="mt-5 text-xs text-muted-foreground">Interns can choose from the themes approved by the administrator.</p>}
+        ) : <p className="mt-5 text-xs text-muted-foreground">Personal colors are stored separately for this browser account.</p>}
 
         <div className="mt-6 flex flex-wrap gap-2 border-t pt-5">
           {isFounder && <Button onClick={save}><Save className="size-4" /> Save Theme</Button>}
-          <Button variant="outline" onClick={() => { setDraft(THEME_PRESETS[0].colors); applyPreset("classic-light"); toast.success("Default theme restored for this account."); }}><RotateCcw className="size-4" /> Reset to Default</Button>
+          {!isFounder && <Button onClick={applyPersonal}><Save className="size-4" /> Save Personal Appearance</Button>}
+          <Button variant="outline" onClick={() => { setDraft(THEME_PRESETS[0].colors); if (isFounder) applyPreset("classic-light"); else { chooseTheme("classic-light"); setPersonalThemeColors(null); } toast.success("Default theme restored for this account."); }}><RotateCcw className="size-4" /> Reset to Default</Button>
         </div>
       </section>
 
       <section className="min-w-0">
         <h2 className="mb-3 text-sm font-semibold text-navy">Live preview</h2>
         <div className="overflow-hidden rounded-xl border shadow-card" style={themeCssProperties(draft) as React.CSSProperties}>
-          <div className="flex min-h-12 items-center justify-between px-4" style={{ backgroundColor: "var(--card)" }}><span className="text-sm font-semibold text-foreground">LeadPilot CRM</span><span className="text-xs text-muted-foreground">Appearance preview</span></div>
+          <div className="flex min-h-12 items-center justify-between px-4" style={{ backgroundColor: "var(--header-background)" }}><span className="text-sm font-semibold text-foreground">LeadPilot CRM</span><span className="text-xs text-muted-foreground">Appearance preview</span></div>
           <div className="grid gap-3 p-4" style={{ backgroundColor: "var(--background)" }}>
             <div className="rounded-lg border p-4" style={{ backgroundColor: "var(--card)" }}><h3 className="font-semibold text-navy">Your workspace</h3><p className="mt-1 text-sm text-foreground">Cards, controls, and text adapt to your selection.</p><div className="mt-4 flex flex-wrap gap-2"><span className="rounded-md px-3 py-2 text-sm font-medium" style={{ backgroundColor: "var(--primary)", color: "var(--primary-foreground)" }}>Primary action</span><span className="rounded-md px-3 py-2 text-sm font-medium" style={{ backgroundColor: "var(--secondary)", color: "var(--secondary-foreground)" }}>Secondary</span></div></div>
             <div className="rounded-lg p-3 text-sm" style={{ backgroundColor: "var(--sidebar)", color: "var(--sidebar-foreground)" }}>Navigation preview <span className="ml-2 rounded px-2 py-1" style={{ backgroundColor: "var(--sidebar-primary)", color: "var(--sidebar-primary-foreground)" }}>Active</span></div>

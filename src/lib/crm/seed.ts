@@ -1,4 +1,5 @@
 import type { CrmData, Lead, LeadPriority, LeadStatus } from "./types";
+import { createDefaultEcosystem } from "./ecosystem";
 
 const day = 86400000;
 const iso = (offsetDays: number) => new Date(Date.now() + offsetDays * day).toISOString();
@@ -96,6 +97,7 @@ export const seedData: CrmData = {
   workSessions: [],
   readNotificationIds: [],
   session: null,
+  ecosystem: createDefaultEcosystem(),
   settings: {
     role: "Founder",
     companyName: "LeadPilot CRM",
